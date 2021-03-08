@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using Tourplaner.Infrastructure;
 
 namespace Tourplaner
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : PropertyChangedBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public Person User { get; }
 
         public string Firstname
@@ -59,9 +58,9 @@ namespace Tourplaner
             this.savePersonCommand = new SavePersonCommand(this);
         }
 
-        public void NotifyPropertyChanged(string name)
+        public override void NotifyPropertyChanged(string name)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(name));
+            base.NotifyPropertyChanged(name);
             savePersonCommand.NotifyCanExecuteChanged(this, EventArgs.Empty);
         }
 
