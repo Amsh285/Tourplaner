@@ -20,6 +20,7 @@ namespace Tourplaner
                 {
                     User.Firstname = value;
                     NotifyPropertyChanged(nameof(Firstname));
+                    NotifyPropertyChanged(nameof(DisplayFirstNameText));
                 }
             }
         }
@@ -33,9 +34,14 @@ namespace Tourplaner
                 {
                     User.Lastname = value;
                     NotifyPropertyChanged(nameof(Lastname));
+                    NotifyPropertyChanged(nameof(DisplayLastNameText));
                 }
             }
         }
+
+        public string DisplayFirstNameText { get { return Firstname; } }
+
+        public string DisplayLastNameText { get { return Lastname; } }
 
         public string DisplayText
         {

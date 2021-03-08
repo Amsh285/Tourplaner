@@ -23,7 +23,6 @@ namespace Tourplaner
         public MainWindowView()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
         }
     }
 }

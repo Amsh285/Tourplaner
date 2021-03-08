@@ -20,16 +20,22 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Label Target="{Binding txtFistname}" Grid.Row="0" Grid.Column="0" Margin="2" >Vorname</Label>
-        <TextBox Name="txtFistname" Text="{Binding Firstname}" Grid.Row="0" Grid.Column="1" Margin="2" ></TextBox>
+        <Label Target="{Binding ElementName=Fistname}" Grid.Row="0" Grid.Column="0" Margin="2" >Vorname</Label>
+        <!--<TextBox x:Name="txtFistname" Text="{Binding Firstname}" Grid.Row="0" Grid.Column="1" Margin="2" ></TextBox>-->
+        <TextBox x:Name="Firstname" Grid.Row="0" Grid.Column="1" Margin="2" ></TextBox>
 
-        <Label Target="{Binding txtLastname}" Grid.Row="1" Grid.Column="0" Margin="2" >Nachname</Label>
-        <TextBox Name="txtLastname" Text="{Binding Lastname}" Grid.Row="1" Grid.Column="1" Margin="2" ></TextBox>
+        <Label Target="{Binding ElementName=Lastname}" Grid.Row="1" Grid.Column="0" Margin="2" >Nachname</Label>
+        <!--<TextBox x:Name="txtLastname" Text="{Binding Lastname}" Grid.Row="1" Grid.Column="1" Margin="2" ></TextBox>-->
+        <TextBox x:Name="Lastname" Grid.Row="1" Grid.Column="1" Margin="2" ></TextBox>
 
         <Button Command="{Binding SavePersonCommand}" Grid.Row="2" Grid.ColumnSpan="2" Margin="2, 10, 100, 10" >Save</Button>
 
-        <TextBlock Text="{Binding Firstname}" Grid.Row="3" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <!--<TextBlock Text="{Binding Firstname}" Grid.Row="3" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
         <TextBlock Text="{Binding Lastname}" Grid.Row="4" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
-        <TextBlock Text="{Binding DisplayText}" Grid.Row="5" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <TextBlock Text="{Binding DisplayText}" Grid.Row="5" Grid.ColumnSpan="2" Margin="2" ></TextBlock>-->
+
+        <TextBlock x:Name="DisplayFirstNameText" Grid.Row="3" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <TextBlock x:Name="DisplayLastNameText" Grid.Row="4" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <TextBlock x:Name="DisplayText" Grid.Row="5" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
     </Grid>
 </Window>
