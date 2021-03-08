@@ -1,0 +1,35 @@
+﻿<Window x:Class="Tourplaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tourplaner"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Target="{Binding txtFistname}" Grid.Row="0" Grid.Column="0" Margin="2" >Vorname</Label>
+        <TextBox Name="txtFistname" Text="{Binding Firstname}" Grid.Row="0" Grid.Column="1" Margin="2" ></TextBox>
+
+        <Label Target="{Binding txtLastname}" Grid.Row="1" Grid.Column="0" Margin="2" >Nachname</Label>
+        <TextBox Name="txtLastname" Text="{Binding Lastname}" Grid.Row="1" Grid.Column="1" Margin="2" ></TextBox>
+
+        <Button Command="{Binding SavePersonCommand}" Grid.Row="2" Grid.ColumnSpan="2" Margin="2, 10, 100, 10" >Save</Button>
+
+        <TextBlock Text="{Binding Firstname}" Grid.Row="3" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <TextBlock Text="{Binding Lastname}" Grid.Row="4" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+        <TextBlock Text="{Binding DisplayText}" Grid.Row="5" Grid.ColumnSpan="2" Margin="2" ></TextBlock>
+    </Grid>
+</Window>
