@@ -26,8 +26,7 @@ namespace Tourplaner.IoC
 
             builder.RegisterTypes(viewModels)
                 .AsSelf()
-                .AsImplementedInterfaces()
-                .SingleInstance();
+                .AsImplementedInterfaces();
         }
     }
 }

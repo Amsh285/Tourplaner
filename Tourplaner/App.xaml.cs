@@ -21,16 +21,25 @@ namespace Tourplaner
             ContainerBootstrapper bootstrapper = new ContainerBootstrapper();
             IContainer container = bootstrapper.Build();
 
-            MainWindowViewModel viewModel = container.Resolve<MainWindowViewModel>();
+            //MainWindowViewModel viewModel = container.Resolve<MainWindowViewModel>();
 
-            MainWindowView mainWindow = new MainWindowView();
-            mainWindow.DataContext = viewModel;
+            //MainWindowView mainWindow = new MainWindowView();
+            //mainWindow.DataContext = viewModel;
+
+            //ViewModelBinder binder = new ViewModelBinder();
+            //binder.Bind(viewModel, mainWindow);
+
+            //mainWindow.Show();
 
             ViewModelBinder binder = new ViewModelBinder();
-            binder.Bind(viewModel, mainWindow);
 
-            
-            mainWindow.Show();
+            ShellView shellView = new ShellView();
+            ShellViewModel shellViewModel = container.Resolve<ShellViewModel>();
+            shellView.DataContext = shellViewModel;
+
+            binder.Bind(shellViewModel, shellView);
+
+            shellView.Show();
         }
     }
 }

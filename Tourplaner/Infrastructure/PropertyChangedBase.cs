@@ -8,7 +8,7 @@ namespace Tourplaner.Infrastructure
 
         public virtual void NotifyPropertyChanged(string name)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
