@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using NLog;
+using NLog.Config;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,6 +14,7 @@ using System.Windows;
 using System.Xml.Serialization;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Configuration;
+using Tourplaner.Infrastructure.Logging;
 using Tourplaner.IoC;
 
 namespace Tourplaner
@@ -23,7 +26,7 @@ namespace Tourplaner
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //Todo: Logger
+            ILogger<App> logger = new NLogLogger<App>();
 
             try
             {
@@ -45,12 +48,12 @@ namespace Tourplaner
             }
             catch(TourplanerConfigReaderException configReaderEx)
             {
-                Debug.WriteLine($"Fehler beim laden der Konfiguration: {configReaderEx.Message}");
+                logger.Error($"Fehler beim laden der Konfiguration: {configReaderEx.Message}");
                 this.Shutdown();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                logger.Error($"Unexpected Error: {ex.Message}");
                 this.Shutdown();
             }
         }

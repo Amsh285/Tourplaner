@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using Tourplaner.Infrastructure.Configuration;
 using Tourplaner.Infrastructure;
+using Tourplaner.Infrastructure.Logging;
 
 namespace Tourplaner.IoC
 {
@@ -21,6 +22,7 @@ namespace Tourplaner.IoC
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             RegisterViewModels(builder, assembly);
+            RegisterLogger(builder);
 
             return builder.Build();
         }
@@ -35,6 +37,13 @@ namespace Tourplaner.IoC
             builder.RegisterTypes(viewModels)
                 .AsSelf()
                 .AsImplementedInterfaces();
+        }
+
+        private void RegisterLogger(ContainerBuilder builder)
+        {
+            builder.RegisterGeneric(typeof(NLogLogger<>))
+                .AsImplementedInterfaces()
+                .AsSelf();
         }
     }
 }
