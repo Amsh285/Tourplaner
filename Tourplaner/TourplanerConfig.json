@@ -1,0 +1,9 @@
+﻿{
+  "DbSettings": {
+    "UserID": "Tourplaner_User",
+    "Password": "123",
+    "Host": "localhost",
+    "Port": "5433",
+    "Database": "Tourplaner"
+  }
+}

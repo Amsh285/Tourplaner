@@ -3,10 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Serialization;
 using Tourplaner.Infrastructure;
+using Tourplaner.Infrastructure.Configuration;
 using Tourplaner.IoC;
 
 namespace Tourplaner
@@ -18,37 +23,36 @@ namespace Tourplaner
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            ContainerBootstrapper bootstrapper = new ContainerBootstrapper();
-            IContainer container = bootstrapper.Build();
+            //Todo: Logger
 
-            //MainWindowViewModel viewModel = container.Resolve<MainWindowViewModel>();
+            try
+            {
+                TourplanerConfigReader configReader = new TourplanerConfigReader();
+                TourplanerConfig config = configReader.GetTourplanerConfig();
 
-            //MainWindowView mainWindow = new MainWindowView();
-            //mainWindow.DataContext = viewModel;
+                ContainerBootstrapper bootstrapper = new ContainerBootstrapper();
+                IContainer container = bootstrapper.Build(config);
 
-            //ViewModelBinder binder = new ViewModelBinder();
-            //binder.Bind(viewModel, mainWindow);
+                ViewModelBinder binder = new ViewModelBinder();
 
-            //mainWindow.Show();
+                ShellView shellView = new ShellView();
+                ShellViewModel shellViewModel = container.Resolve<ShellViewModel>();
+                shellView.DataContext = shellViewModel;
 
-            ViewModelBinder binder = new ViewModelBinder();
+                binder.Bind(shellViewModel, shellView);
 
-            ShellView shellView = new ShellView();
-            ShellViewModel shellViewModel = container.Resolve<ShellViewModel>();
-            shellView.DataContext = shellViewModel;
-
-            binder.Bind(shellViewModel, shellView);
-
-            shellViewModel.Tabs.CollectionChanged += Tabs_CollectionChanged;
-
-            shellView.Show();
+                shellView.Show();
+            }
+            catch(TourplanerConfigReaderException configReaderEx)
+            {
+                Debug.WriteLine($"Fehler beim laden der Konfiguration: {configReaderEx.Message}");
+                this.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                this.Shutdown();
+            }
         }
-
-        private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        //private IDictionary<PropertyChangedBase, FrameworkElement> 
     }
 }
