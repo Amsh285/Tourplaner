@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Windows;
 using Tourplaner.Infrastructure;
 
 namespace Tourplaner
 {
     public class ShellViewModel : PropertyChangedBase
     {
-        public ObservableCollection<Tourplaner.UI.TabItem> Tabs
+        public ObservableCollection<Tourplaner.UI.TabItemViewModel> Tabs
         {
             get
             {
@@ -24,35 +25,17 @@ namespace Tourplaner
             }
         }
 
-        public object CurrentViewModel
-        {
-            get
-            {
-                return currentViewModel;
-            }
-            set
-            {
-                if (currentViewModel != value)
-                {
-                    currentViewModel = value;
-                    NotifyPropertyChanged(nameof(CurrentViewModel));
-                }
-            }
-        }
-
         public ShellViewModel()
         {
-            Tabs = new ObservableCollection<UI.TabItem>();
+            Tabs = new ObservableCollection<UI.TabItemViewModel>();
 
             TourViewModel tourViewModel = new TourViewModel();
             //tourViewModel.Model.Description = "Test123";
 
-            CurrentViewModel = new TourViewModel();
-
-            Tabs.Add(new UI.TabItem() { Header = "Tour- Übersicht", ViewModel = tourViewModel });
+            Tabs.Add(new UI.TabItemViewModel() { Header = "Tour- Übersicht", ViewModel = tourViewModel });
+            Tabs.Add(new UI.TabItemViewModel() { Header = "Test", ViewModel = new TestViewModel() });
         }
 
-        private object currentViewModel;
-        private ObservableCollection<Tourplaner.UI.TabItem> tabs;
+        private ObservableCollection<Tourplaner.UI.TabItemViewModel> tabs;
     }
 }

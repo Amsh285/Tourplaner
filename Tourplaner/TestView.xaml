@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Tourplaner.TourView"
+﻿<UserControl x:Class="Tourplaner.TestView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,8 +8,10 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel>
-            <TextBlock>Hallo Welt</TextBlock>
-            <Button>haha</Button>
+            <TextBlock>das</TextBlock>
+            <TextBlock>ist</TextBlock>
+            <TextBlock>ein</TextBlock>
+            <TextBlock>test</TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

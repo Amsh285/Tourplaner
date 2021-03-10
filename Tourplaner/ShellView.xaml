@@ -3,31 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Tourplaner"
+        xmlns:local="clr-namespace:Tourplaner" 
+        xmlns:ui="clr-namespace:Tourplaner.UI"
         mc:Ignorable="d"
         Title="ShellView" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:TourViewModel}">
-            <local:TourView DataContext="{Binding }" />
+            <local:TourView DataContext="{Binding}" />
         </DataTemplate>
+
+        <ui:ShellViewDataTemplateSelector x:Key="tabControlTemplateSelector" />
     </Window.Resources>
     <Grid>
-        
-        <TabControl ItemsSource="{Binding Tabs}">
+
+        <TabControl ContentTemplateSelector="{StaticResource tabControlTemplateSelector}" ItemsSource="{Binding Tabs}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Header}" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
 
-            <TabControl.ContentTemplate>
+            <!--<TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl Content="{Binding ViewModel}" />
+                    -->
+            <!--<ContentControl Content="{Binding ViewModel}" />-->
+            <!--
+                    <ui:ShellViewContentControl Content="{Binding ViewModel}"></ui:ShellViewContentControl>
                 </DataTemplate>
-            </TabControl.ContentTemplate>
+            </TabControl.ContentTemplate>-->
         </TabControl>
-
-
-        <!--<ContentControl Content="{Binding CurrentViewModel}" />-->
     </Grid>
 </Window>
+
+    

@@ -39,7 +39,16 @@ namespace Tourplaner
 
             binder.Bind(shellViewModel, shellView);
 
+            shellViewModel.Tabs.CollectionChanged += Tabs_CollectionChanged;
+
             shellView.Show();
         }
+
+        private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        //private IDictionary<PropertyChangedBase, FrameworkElement> 
     }
 }

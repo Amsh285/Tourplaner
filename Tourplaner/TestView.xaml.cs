@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace Tourplaner
 {
     /// <summary>
-    /// Interaction logic for TourView.xaml
+    /// Interaction logic for TestView.xaml
     /// </summary>
-    public partial class TourView : UserControl
+    public partial class TestView : UserControl
     {
-        public TourView()
+        public TestView()
         {
             InitializeComponent();
         }
