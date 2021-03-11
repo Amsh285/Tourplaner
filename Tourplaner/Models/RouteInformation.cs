@@ -14,6 +14,6 @@ namespace Tourplaner.Models
 
         public string Ambiguities { get; set; }
 
-        public string RouteType { get; set; }
+        public RouteType RouteType { get; set; }
     }
 }

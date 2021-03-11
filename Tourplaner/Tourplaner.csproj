@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Attributes\" />
+    <Folder Include="Infrastructure\Database\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 

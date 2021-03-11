@@ -5,8 +5,10 @@ using Tourplaner.Infrastructure;
 
 namespace Tourplaner
 {
-    public class TestViewModel : PropertyChangedBase
+    public class TestViewModel : PropertyChangedBase, IScreen
     {
         public string Lol { get; set; }
+
+        public string DisplayName => "Test";
     }
 }

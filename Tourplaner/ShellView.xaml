@@ -8,29 +8,16 @@
         mc:Ignorable="d"
         Title="ShellView" Height="450" Width="800">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type local:TourViewModel}">
-            <local:TourView DataContext="{Binding}" />
-        </DataTemplate>
-
         <ui:ShellViewDataTemplateSelector x:Key="tabControlTemplateSelector" />
     </Window.Resources>
     <Grid>
 
-        <TabControl ContentTemplateSelector="{StaticResource tabControlTemplateSelector}" ItemsSource="{Binding Tabs}">
+        <TabControl ContentTemplateSelector="{StaticResource tabControlTemplateSelector}" ItemsSource="{Binding Screens}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
+                    <TextBlock Text="{Binding DisplayName}" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
-
-            <!--<TabControl.ContentTemplate>
-                <DataTemplate>
-                    -->
-            <!--<ContentControl Content="{Binding ViewModel}" />-->
-            <!--
-                    <ui:ShellViewContentControl Content="{Binding ViewModel}"></ui:ShellViewContentControl>
-                </DataTemplate>
-            </TabControl.ContentTemplate>-->
         </TabControl>
     </Grid>
 </Window>

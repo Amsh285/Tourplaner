@@ -35,12 +35,9 @@ namespace Tourplaner.UI
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if(item is TabItemViewModel tabItemViewModel)
+            if(item is IScreen screen)
             {
-                Assert.NotNull(tabItemViewModel.ViewModel, nameof(tabItemViewModel.ViewModel));
-                
-                Type viewModelType = tabItemViewModel.ViewModel
-                    .GetType();
+                Type viewModelType = screen.GetType();
 
                 Assembly executingAssembly = Assembly.GetExecutingAssembly();
                 Type associatedViewType = executingAssembly.GetTypes()
@@ -48,7 +45,7 @@ namespace Tourplaner.UI
 
                 DataTemplate template = new DataTemplate(viewModelType);
                 FrameworkElementFactory factory = new FrameworkElementFactory(associatedViewType);
-                factory.SetValue(FrameworkElement.DataContextProperty, tabItemViewModel.ViewModel);
+                factory.SetValue(FrameworkElement.DataContextProperty, screen);
                 factory.AddHandler(FrameworkElement.LoadedEvent, ViewLoaded);
 
                 template.VisualTree = factory;

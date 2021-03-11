@@ -6,10 +6,41 @@
              xmlns:local="clr-namespace:Tourplaner"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                   Source="Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <StackPanel>
-            <TextBlock>Hallo Welt</TextBlock>
-            <Button>haha</Button>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelStyle}">Tourname: </Label>
+        <TextBox x:Name="Name" Grid.Row="0" Grid.Column="1" Style="{StaticResource TextBoxStyle}"></TextBox>
+
+        <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelStyle}">Description:</Label>
+        <TextBox x:Name="Description" Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBoxStyle}"></TextBox>
+
+        <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}">Start:</Label>
+        <TextBox x:Name="From" Grid.Row="2" Grid.Column="1" Style="{StaticResource TextBoxStyle}"></TextBox>
+
+        <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}">Ziel:</Label>
+        <TextBox x:Name="To" Grid.Row="3" Grid.Column="1" Style="{StaticResource TextBoxStyle}"></TextBox>
+
+        <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}">Routentyp:</Label>
+        <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource TextBoxStyle}"></TextBox>
     </Grid>
 </UserControl>

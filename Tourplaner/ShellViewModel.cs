@@ -9,33 +9,29 @@ namespace Tourplaner
 {
     public class ShellViewModel : PropertyChangedBase
     {
-        public ObservableCollection<Tourplaner.UI.TabItemViewModel> Tabs
+        public ObservableCollection<IScreen> Screens
         {
             get
             {
-                return tabs;
+                return screens;
             }
             set
             {
-                if (tabs != value)
+                if (screens != value)
                 {
-                    tabs = value;
-                    NotifyPropertyChanged(nameof(Tabs));
+                    screens = value;
+                    NotifyPropertyChanged(nameof(Screens));
                 }
             }
         }
 
-        public ShellViewModel()
+        public ShellViewModel(IEnumerable<IScreen> screens)
         {
-            Tabs = new ObservableCollection<UI.TabItemViewModel>();
+            Assert.NotNull(screens, nameof(screens));
 
-            TourViewModel tourViewModel = new TourViewModel();
-            //tourViewModel.Model.Description = "Test123";
-
-            Tabs.Add(new UI.TabItemViewModel() { Header = "Tour- Übersicht", ViewModel = tourViewModel });
-            Tabs.Add(new UI.TabItemViewModel() { Header = "Test", ViewModel = new TestViewModel() });
+            Screens = new ObservableCollection<IScreen>(screens);
         }
 
-        private ObservableCollection<Tourplaner.UI.TabItemViewModel> tabs;
+        private ObservableCollection<IScreen> screens;
     }
 }
