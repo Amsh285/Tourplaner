@@ -2,46 +2,33 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using Tourplaner.Infrastructure;
+using Tourplaner.Infrastructure.Logging;
 using Tourplaner.Models;
 
 namespace Tourplaner
 {
     public class TourScreenViewModel : Screen
     {
-        public ObservableCollection<TourOverView> Overviews
+        public ObservableCollection<EditTourViewModel> Tours
         {
             get
             {
-                return overviews;
+                return tours;
             }
             set
             {
-                if (overviews != value)
+                if (tours != value)
                 {
-                    overviews = value;
-                    NotifyPropertyChanged(nameof(Overviews));
+                    tours = value;
+                    NotifyPropertyChanged(nameof(Tours));
                 }
             }
         }
 
-        public TourOverView SelectedOverView
-        {
-            get
-            {
-                return selectedOverview;
-            }
-            set
-            {
-                if (selectedOverview != value)
-                {
-                    selectedOverview = value;
-                    NotifyPropertyChanged(nameof(SelectedOverView));
-                }
-            }
-        }
-
-        public TourViewModel SelectedTour
+        public EditTourViewModel SelectedTour
         {
             get
             {
@@ -53,8 +40,6 @@ namespace Tourplaner
                 {
                     selectedTour = value;
                     NotifyPropertyChanged(nameof(SelectedTour));
-
-                    SelectedTourVisible = value != null;
                 }
             }
         }
@@ -75,23 +60,39 @@ namespace Tourplaner
             }
         }
 
-        public TourScreenViewModel()
+        public TourScreenViewModel(ILogger<TourScreenViewModel> logger)
             : base("Tour Übersicht")
         {
-            Overviews = new ObservableCollection<TourOverView>()
+            Assert.NotNull(logger, nameof(logger));
+
+            Tours = new ObservableCollection<EditTourViewModel>()
             {
-                new TourOverView() { ID=123, Name="Xd" },
-                new TourOverView() { ID=456, Name="lol" },
-                new TourOverView() { ID=789, Name="rofl" }
+                new EditTourViewModel() { ID=123, Name="Xd" },
+                new EditTourViewModel() { ID=456, Name="lol" },
+                new EditTourViewModel() { ID=789, Name="rofl" }
             };
 
-            NotifyPropertyChanged(nameof(SelectedTourVisible));
+            this.logger = logger;
         }
 
-        private ObservableCollection<TourOverView> overviews;
-        private TourOverView selectedOverview;
-        private TourViewModel selectedTour;
+        public void OnViewLoaded()
+        {
+
+        }
+
+        public void OnOverviewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.AddedItems.Count > 0 && e.AddedItems[0] is EditTourViewModel editTourViewModel)
+            {
+                SelectedTour = editTourViewModel;
+                SelectedTourVisible = true;
+            }
+        }
+
+        private ObservableCollection<EditTourViewModel> tours;
+        private EditTourViewModel selectedTour;
 
         private bool selectedTourVisible;
+        private readonly ILogger<TourScreenViewModel> logger;
     }
 }

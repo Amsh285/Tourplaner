@@ -36,13 +36,9 @@ namespace Tourplaner
                 ContainerBootstrapper bootstrapper = new ContainerBootstrapper();
                 IContainer container = bootstrapper.Build(config);
 
-                ViewModelBinder binder = new ViewModelBinder();
-
                 ShellView shellView = new ShellView();
                 ShellViewModel shellViewModel = container.Resolve<ShellViewModel>();
                 shellView.DataContext = shellViewModel;
-
-                binder.Bind(shellViewModel, shellView);
 
                 shellView.Show();
             }

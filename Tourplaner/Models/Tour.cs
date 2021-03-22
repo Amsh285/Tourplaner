@@ -1,4 +1,6 @@
-﻿namespace Tourplaner.Models
+﻿using System.Collections.ObjectModel;
+
+namespace Tourplaner.Models
 {
     public sealed class Tour
     {
@@ -10,9 +12,12 @@
 
         public RouteInformation Route { get; set; }
 
+        public ObservableCollection<TourLog> Logs { get; set; }
+
         public Tour()
         {
             Route = new RouteInformation();
+            Logs = new ObservableCollection<TourLog>();
         }
     }
 }

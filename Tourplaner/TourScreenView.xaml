@@ -5,23 +5,55 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Tourplaner"
              xmlns:converters="clr-namespace:Tourplaner.UI.Converters"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter"/>
     </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:CallMethodAction MethodName="OnViewLoaded" TargetObject="{Binding}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <ContentControl Margin="15" Grid.Column="0">
-            <DataGrid SelectedItem="{Binding SelectedOverView}" ItemsSource="{Binding Overviews}"/>
+        <StackPanel Orientation="Horizontal" Margin="2" Grid.Row="0" Grid.ColumnSpan="2" >
+            <Button Margin="0,2,2,2">Neue Tour</Button>
+            <Button Margin="0,2,2,2">Tour Löschen</Button>
+        </StackPanel>
+
+        <ContentControl Margin="15" Grid.Row="1" Grid.Column="0">
+            <DataGrid IsReadOnly="True" SelectionUnit="FullRow" SelectionMode="Single" 
+                  SelectedItem="{Binding SelectedTour}" ItemsSource="{Binding Tours}"
+                  AutoGenerateColumns="False"  >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:CallMethodAction MethodName="OnOverviewSelectionChanged" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Tourname" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Start" Binding="{Binding From}"/>
+                    <DataGridTextColumn Header="Ziel" Binding="{Binding To}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </ContentControl>
 
-        <ContentControl Visibility="{Binding SelectedTourVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Margin="15" Grid.Column="1">
-            <local:TourView DataContext="{Binding SelectedTour}" />
+        <ContentControl Visibility="{Binding SelectedTourVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Margin="15" Grid.Row="1" Grid.Column="1">
+            <local:EditTourView DataContext="{Binding SelectedTour}" />
         </ContentControl>
     </Grid>
 </UserControl>

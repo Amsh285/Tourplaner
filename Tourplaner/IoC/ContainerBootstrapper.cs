@@ -5,6 +5,7 @@ using System.Linq;
 using Tourplaner.Infrastructure.Configuration;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
+using Tourplaner.Infrastructure.Database;
 
 namespace Tourplaner.IoC
 {
@@ -23,8 +24,16 @@ namespace Tourplaner.IoC
             Assembly assembly = Assembly.GetExecutingAssembly();
             RegisterViewModels(builder, assembly);
             RegisterLogger(builder);
+            RegisterDatabase(builder);
 
             return builder.Build();
+        }
+
+        private void RegisterDatabase(ContainerBuilder builder)
+        {
+            builder.RegisterType<PostgreSqlDatabase>()
+                .AsSelf()
+                .SingleInstance();
         }
 
         private static void RegisterViewModels(ContainerBuilder builder, Assembly assembly)

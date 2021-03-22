@@ -1,37 +1,65 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using Tourplaner.Infrastructure;
 
 namespace Tourplaner
 {
     public class ShellViewModel : PropertyChangedBase
     {
-        public ObservableCollection<IScreen> Screens
+        public IScreen SelectedScreen
         {
             get
             {
-                return screens;
+                return selectedScreen;
             }
             set
             {
-                if (screens != value)
+                if (selectedScreen != value)
                 {
-                    screens = value;
-                    NotifyPropertyChanged(nameof(Screens));
+                    selectedScreen = value;
+                    NotifyPropertyChanged(nameof(SelectedScreen));
                 }
             }
         }
 
-        public ShellViewModel(IEnumerable<IScreen> screens)
+        public ShellViewModel(Func<EditTourViewModel> editTourViewModel, Func<HomeViewModel> homeViewModel, Func<TourScreenViewModel> tourScreenViewModel)
         {
-            Assert.NotNull(screens, nameof(screens));
+            Assert.NotNull(editTourViewModel, nameof(editTourViewModel));
+            Assert.NotNull(homeViewModel, nameof(homeViewModel));
+            Assert.NotNull(tourScreenViewModel, nameof(tourScreenViewModel));
 
-            Screens = new ObservableCollection<IScreen>(screens);
+            this.editTourViewModel = editTourViewModel;
+            this.homeViewModel = homeViewModel;
+            this.tourScreenViewModel = tourScreenViewModel;
         }
 
-        private ObservableCollection<IScreen> screens;
+        public void OnMenuSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is ListViewItem item)
+            {
+                if (item.Name == "ItemHome")
+                {
+                    SelectedScreen = homeViewModel();
+                }
+                else if(item.Name == "ItemCreate")
+                {
+                    SelectedScreen = editTourViewModel();
+                }
+                else if(item.Name == "ItemOverview")
+                {
+                    SelectedScreen = tourScreenViewModel();
+                }
+            }
+        }
+
+        private IScreen selectedScreen;
+        private readonly Func<EditTourViewModel> editTourViewModel;
+        private readonly Func<HomeViewModel> homeViewModel;
+        private readonly Func<TourScreenViewModel> tourScreenViewModel;
     }
 }

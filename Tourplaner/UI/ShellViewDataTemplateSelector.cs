@@ -13,26 +13,6 @@ namespace Tourplaner.UI
 {
     public class ShellViewDataTemplateSelector : DataTemplateSelector
     {
-        public event RoutedEventHandler ViewLoaded;
-
-        public ShellViewDataTemplateSelector()
-        {
-            this.viewModelBinder = new ViewModelBinder();
-
-            ViewLoaded += ShellViewDataTemplateSelector_ViewLoaded;
-        }
-
-        private void ShellViewDataTemplateSelector_ViewLoaded(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement view && view.DataContext is PropertyChangedBase viewModel)
-            {
-                viewModelBinder.Bind(viewModel, view);
-
-                if (viewModel is IHasView hasView)
-                    hasView.Loaded(sender, e);
-            }
-        }
-
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             if(item is IScreen screen)
@@ -46,7 +26,6 @@ namespace Tourplaner.UI
                 DataTemplate template = new DataTemplate(viewModelType);
                 FrameworkElementFactory factory = new FrameworkElementFactory(associatedViewType);
                 factory.SetValue(FrameworkElement.DataContextProperty, screen);
-                factory.AddHandler(FrameworkElement.LoadedEvent, ViewLoaded);
 
                 template.VisualTree = factory;
 
@@ -68,7 +47,5 @@ namespace Tourplaner.UI
 
             return viewName.Equals(viewModelname, StringComparison.Ordinal);
         }
-
-        private readonly ViewModelBinder viewModelBinder;
     }
 }
