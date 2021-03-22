@@ -27,13 +27,13 @@ namespace Tourplaner
             }
         }
 
-        public ShellViewModel(Func<EditTourViewModel> editTourViewModel, Func<HomeViewModel> homeViewModel, Func<TourScreenViewModel> tourScreenViewModel)
+        public ShellViewModel(Func<CreateTourScreenViewModel> createTourScreenViewModel, Func<HomeViewModel> homeViewModel, Func<TourScreenViewModel> tourScreenViewModel)
         {
-            Assert.NotNull(editTourViewModel, nameof(editTourViewModel));
+            Assert.NotNull(createTourScreenViewModel, nameof(createTourScreenViewModel));
             Assert.NotNull(homeViewModel, nameof(homeViewModel));
             Assert.NotNull(tourScreenViewModel, nameof(tourScreenViewModel));
 
-            this.editTourViewModel = editTourViewModel;
+            this.createTourScreenViewModel = createTourScreenViewModel;
             this.homeViewModel = homeViewModel;
             this.tourScreenViewModel = tourScreenViewModel;
         }
@@ -48,7 +48,7 @@ namespace Tourplaner
                 }
                 else if(item.Name == "ItemCreate")
                 {
-                    SelectedScreen = editTourViewModel();
+                    SelectedScreen = createTourScreenViewModel();
                 }
                 else if(item.Name == "ItemOverview")
                 {
@@ -58,7 +58,7 @@ namespace Tourplaner
         }
 
         private IScreen selectedScreen;
-        private readonly Func<EditTourViewModel> editTourViewModel;
+        private readonly Func<CreateTourScreenViewModel> createTourScreenViewModel;
         private readonly Func<HomeViewModel> homeViewModel;
         private readonly Func<TourScreenViewModel> tourScreenViewModel;
     }

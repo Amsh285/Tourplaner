@@ -1,12 +1,11 @@
 ﻿using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Tourplaner.Infrastructure;
 using Tourplaner.Models;
 
 namespace Tourplaner
 {
-    public sealed class EditTourViewModel : ViewModel<Tour>, IScreen
+    public class EditTourViewModel : ValidatedViewModel<Tour>
     {
         public int ID
         {
@@ -24,6 +23,7 @@ namespace Tourplaner
             }
         }
 
+        [Required(ErrorMessage = "Tour must have a Name.")]
         public string Name
         {
             get
@@ -36,6 +36,7 @@ namespace Tourplaner
                 {
                     Model.Name = value;
                     NotifyPropertyChanged(nameof(Name));
+                    NotifyPropertyChanged(nameof(IsValid));
                 }
             }
         }
@@ -119,8 +120,6 @@ namespace Tourplaner
                 }
             }
         }
-
-        public string DisplayName => "Tour bearbeiten";
 
         public EditTourViewModel()
         {

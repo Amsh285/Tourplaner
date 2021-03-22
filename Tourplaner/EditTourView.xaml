@@ -17,12 +17,12 @@
         <StackPanel Width="150" Grid.Column="0">
             <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Tour Data</TextBlock>
             
-            <TextBox x:Name="Name" Text="{Binding Name}" 
+            <TextBox x:Name="Name" Text="{Binding Name, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Name"
                      materialDesign:HintAssist.IsFloating="True"
                      Margin="5" Grid.Row="0" Grid.Column="1"></TextBox>
 
-            <TextBox x:Name="Description" Text="{Binding Description}" 
+            <TextBox x:Name="Description" Text="{Binding Description}" MaxLength="2000"
                      materialDesign:HintAssist.Hint="Tour Description"
                      materialDesign:HintAssist.IsFloating="True"
                      AcceptsReturn="True"
@@ -31,12 +31,12 @@
                      MaxHeight="100"
                      Margin="5" Grid.Row="1" Grid.Column="1"></TextBox>
 
-            <TextBox x:Name="From" Text="{Binding From}"
+            <TextBox x:Name="From" Text="{Binding From}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Start" 
                      materialDesign:HintAssist.IsFloating="True"
                      Margin="5" Grid.Row="2" Grid.Column="1"></TextBox>
 
-            <TextBox x:Name="To" Text="{Binding To}" 
+            <TextBox x:Name="To" Text="{Binding To}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Destination"
                      materialDesign:HintAssist.IsFloating="True"
                      Margin="5" Grid.Row="3" Grid.Column="1"></TextBox>
@@ -50,7 +50,6 @@
 
             <StackPanel Grid.Row="0">
                 <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Route</TextBlock>
-
 
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="0,2,2,2">Refresh
