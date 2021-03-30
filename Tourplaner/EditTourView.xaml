@@ -65,7 +65,7 @@
 
             <StackPanel Grid.Row="1">
                 <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Logs</TextBlock>
-                <DataGrid ItemsSource="{Binding Logs}" />
+                <DataGrid ItemsSource="{Binding Logs}" AutoGenerateColumns="true"/>
             </StackPanel>
         </Grid>
     </Grid>

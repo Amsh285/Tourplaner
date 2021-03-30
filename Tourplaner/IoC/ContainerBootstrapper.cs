@@ -6,6 +6,7 @@ using Tourplaner.Infrastructure.Configuration;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
 using Tourplaner.Infrastructure.Database;
+using Tourplaner.UI;
 
 namespace Tourplaner.IoC
 {
@@ -25,6 +26,7 @@ namespace Tourplaner.IoC
             RegisterDatabase(builder);
             RegisterRepositories(builder, assembly);
             RegisterEntities(builder, assembly);
+            RegisterInfraStructure(builder);
 
             return builder.Build();
         }
@@ -89,6 +91,14 @@ namespace Tourplaner.IoC
                 .ToArray();
 
             builder.RegisterTypes(entities)
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+        }
+
+        private void RegisterInfraStructure(ContainerBuilder builder)
+        {
+            builder.RegisterType<MessageBoxService>()
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();

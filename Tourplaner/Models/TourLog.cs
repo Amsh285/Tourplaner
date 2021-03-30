@@ -27,5 +27,10 @@ namespace Tourplaner.Models
         public double TotalTime { get; set; }
 
         public int Rating { get; set; }
+
+        public TourLog()
+        {
+            TourDate = DateTime.Now;
+        }
     }
 }
