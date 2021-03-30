@@ -21,8 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Attributes\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>

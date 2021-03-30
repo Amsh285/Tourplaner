@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Database;
 using Tourplaner.Models;
@@ -27,10 +28,10 @@ namespace Tourplaner.Repositories
             NpgsqlParameter[] parameters = new NpgsqlParameter[]
             {
                 new NpgsqlParameter("name", value.Name),
-                new NpgsqlParameter("description", value.Description),
-                new NpgsqlParameter("From", value.Route.From),
-                new NpgsqlParameter("to", value.Route.To),
-                new NpgsqlParameter("routeType", value.Route.RouteType),
+                PostgreSqlParameterHelper.ValueOrNull("description", value.Description),
+                PostgreSqlParameterHelper.ValueOrNull("From", value.Route.From),
+                PostgreSqlParameterHelper.ValueOrNull("to", value.Route.To),
+                new NpgsqlParameter("routeType", (int)value.Route.RouteType),
             };
 
             return database.ExecuteScalar<int>(statement, transaction, parameters);

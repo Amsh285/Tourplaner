@@ -14,25 +14,31 @@ namespace Tourplaner.IoC
         public IContainer Build(TourplanerConfig config)
         {
             Assert.NotNull(config, nameof(config));
+            Assert.NotNull(config.DbSettings, nameof(config.DbSettings));
 
             ContainerBuilder builder = new ContainerBuilder();
-
-            builder.RegisterInstance(config)
-                .AsSelf()
-                .AsImplementedInterfaces();
-
             Assembly assembly = Assembly.GetExecutingAssembly();
+
+            RegisterConfig(builder, config);
             RegisterViewModels(builder, assembly);
             RegisterLogger(builder);
             RegisterDatabase(builder);
+            RegisterRepositories(builder, assembly);
+            RegisterEntities(builder, assembly);
 
             return builder.Build();
         }
 
-        private void RegisterDatabase(ContainerBuilder builder)
+        private static void RegisterConfig(ContainerBuilder builder, TourplanerConfig config)
         {
-            builder.RegisterType<PostgreSqlDatabase>()
+            builder.RegisterInstance(config)
+                            .AsSelf()
+                            .AsImplementedInterfaces()
+                            .SingleInstance();
+
+            builder.RegisterInstance(config.DbSettings)
                 .AsSelf()
+                .AsImplementedInterfaces()
                 .SingleInstance();
         }
 
@@ -53,6 +59,39 @@ namespace Tourplaner.IoC
             builder.RegisterGeneric(typeof(NLogLogger<>))
                 .AsImplementedInterfaces()
                 .AsSelf();
+        }
+
+        private void RegisterDatabase(ContainerBuilder builder)
+        {
+            builder.RegisterType<PostgreSqlDatabase>()
+                .AsSelf()
+                .SingleInstance();
+        }
+
+        private void RegisterRepositories(ContainerBuilder builder, Assembly assembly)
+        {
+            Type[] repositories = assembly
+                .GetTypes()
+                .Where(t => t.Name.EndsWith("Repository"))
+                .ToArray();
+
+            builder.RegisterTypes(repositories)
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+        }
+
+        private void RegisterEntities(ContainerBuilder builder, Assembly assembly)
+        {
+            Type[] entities = assembly
+                .GetTypes()
+                .Where(t => t.Name.EndsWith("Entity"))
+                .ToArray();
+
+            builder.RegisterTypes(entities)
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
         }
     }
 }

@@ -1,30 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
+using Tourplaner.Infrastructure.Logging;
 
 namespace Tourplaner
 {
     public sealed class CreateTourScreenViewModel : EditTourViewModel, IScreen
     {
-        public bool CanSaveTour
+        public string DisplayName => "Create Tour";
+
+        public CreateTourScreenViewModel(TourEntity tourEntity, ILogger<CreateTourScreenViewModel> logger)
         {
-            get
+            Assert.NotNull(tourEntity, nameof(tourEntity));
+            Assert.NotNull(logger, nameof(logger));
+
+            this.tourEntity = tourEntity;
+            this.logger = logger;
+        }
+
+        public void CreateTour()
+        {
+            try
             {
-                return canSaveTour;
+                tourEntity.CreateTour(this.Model);
             }
-            set
+            catch (Exception ex)
             {
-                if (canSaveTour != value)
-                {
-                    canSaveTour = value;
-                    NotifyPropertyChanged(nameof(CanSaveTour));
-                }
+                logger.Error($"Unexpected Error while creating new Tour: {ex.Message}");
             }
         }
 
-        public string DisplayName => "Create Tour";
-
-        private bool canSaveTour;
+        private readonly TourEntity tourEntity;
+        private readonly ILogger<CreateTourScreenViewModel> logger;
     }
 }
