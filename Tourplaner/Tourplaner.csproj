@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Call on me for honor.mp4" />
     <None Remove="Assets\computer-meme-2.jpg" />
     <None Remove="Assets\thinkingStickman.jpeg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Call on me for honor.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

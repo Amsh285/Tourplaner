@@ -27,15 +27,17 @@ namespace Tourplaner
             }
         }
 
-        public ShellViewModel(Func<CreateTourScreenViewModel> createTourScreenViewModel, Func<HomeViewModel> homeViewModel, Func<TourScreenViewModel> tourScreenViewModel)
+        public ShellViewModel(Func<CreateTourScreenViewModel> createTourScreenViewModel, Func<HomeViewModel> homeViewModel, Func<TourScreenViewModel> tourScreenViewModel, Func<MediaScreenViewModel> mediaScreenViewModel)
         {
             Assert.NotNull(createTourScreenViewModel, nameof(createTourScreenViewModel));
             Assert.NotNull(homeViewModel, nameof(homeViewModel));
             Assert.NotNull(tourScreenViewModel, nameof(tourScreenViewModel));
+            Assert.NotNull(mediaScreenViewModel, nameof(mediaScreenViewModel));
 
             this.createTourScreenViewModel = createTourScreenViewModel;
             this.homeViewModel = homeViewModel;
             this.tourScreenViewModel = tourScreenViewModel;
+            this.mediaScreenViewModel = mediaScreenViewModel;
         }
 
         public void OnMenuSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -54,6 +56,10 @@ namespace Tourplaner
                 {
                     SelectedScreen = tourScreenViewModel();
                 }
+                else if(item.Name == "MediaView")
+                {
+                    SelectedScreen = mediaScreenViewModel();
+                }
             }
         }
 
@@ -61,5 +67,6 @@ namespace Tourplaner
         private readonly Func<CreateTourScreenViewModel> createTourScreenViewModel;
         private readonly Func<HomeViewModel> homeViewModel;
         private readonly Func<TourScreenViewModel> tourScreenViewModel;
+        private readonly Func<MediaScreenViewModel> mediaScreenViewModel;
     }
 }
