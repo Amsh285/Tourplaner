@@ -34,9 +34,9 @@ namespace Tourplaner.IoC
         private static void RegisterConfig(ContainerBuilder builder, TourplanerConfig config)
         {
             builder.RegisterInstance(config)
-                            .AsSelf()
-                            .AsImplementedInterfaces()
-                            .SingleInstance();
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             builder.RegisterInstance(config.DbSettings)
                 .AsSelf()
