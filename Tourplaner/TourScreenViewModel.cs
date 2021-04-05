@@ -65,12 +65,7 @@ namespace Tourplaner
         {
             Assert.NotNull(logger, nameof(logger));
 
-            Tours = new ObservableCollection<EditTourViewModel>()
-            {
-                new EditTourViewModel() { ID=123, Name="Xd" },
-                new EditTourViewModel() { ID=456, Name="lol" },
-                new EditTourViewModel() { ID=789, Name="rofl" }
-            };
+            Tours = new ObservableCollection<EditTourViewModel>();
 
             this.logger = logger;
         }

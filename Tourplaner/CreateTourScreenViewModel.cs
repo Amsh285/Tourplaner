@@ -11,7 +11,8 @@ namespace Tourplaner
     {
         public string DisplayName => "Create Tour";
 
-        public CreateTourScreenViewModel(TourEntity tourEntity, MessageBoxService messageBox, ILogger<CreateTourScreenViewModel> logger)
+        public CreateTourScreenViewModel(TourEntity tourEntity, MessageBoxService messageBox, ILogger<CreateTourScreenViewModel> logger, ILogger<EditTourViewModel> baseLogger)
+            : base(messageBox, baseLogger)
         {
             Assert.NotNull(tourEntity, nameof(tourEntity));
             Assert.NotNull(messageBox, nameof(messageBox));
