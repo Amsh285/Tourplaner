@@ -138,8 +138,6 @@ namespace Tourplaner
             }
         }
 
-        
-
         public byte[] StaticMapImage
         {
             get
