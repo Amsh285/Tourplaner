@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
 using Tourplaner.Models;
@@ -155,56 +156,41 @@ namespace Tourplaner
             }
         }
 
-        public EditTourViewModel(MessageBoxService messageBox, ILogger<EditTourViewModel> logger)
+        public EditTourViewModel(RouteImageEntity routeImageEntity, MessageBoxService messageBox, ILogger<EditTourViewModel> logger)
         {
+            Assert.NotNull(routeImageEntity, nameof(routeImageEntity));
             Assert.NotNull(messageBox, nameof(messageBox));
             Assert.NotNull(logger, nameof(logger));
 
             this.Model = new Tour();
             Assert.NotNull(Model.Route, nameof(Model.Route));
 
+            this.routeImageEntity = routeImageEntity;
             this.messageBox = messageBox;
             this.logger = logger;
         }
 
         public void RefreshMapImage()
         {
-            try
+            if (!string.IsNullOrWhiteSpace(From) && !string.IsNullOrWhiteSpace(To))
             {
-                Task<byte[]> requestTask = RequestStaticMapImage();
-                requestTask.Wait();
-
-                StaticMapImage = requestTask.Result;
+                try
+                {
+                    StaticMapImage = routeImageEntity.GetRouteImage(Model.Route);
+                }
+                catch (Exception ex)
+                {
+                    messageBox.ShowError(ex);
+                    logger.Error($"Unexpected Error while requesting RouteImage: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                messageBox.ShowError(ex);
-                logger.Error($"Unexpected Error while requesting RouteImage: {ex.Message}");
-            }
-        }
-
-        private async Task<byte[]> RequestStaticMapImage()
-        {
-            //Denver Boulder
-
-            string routeType = Enum.GetName(typeof(RouteType), SelectedRouteType);
-
-            string staticMapUrl = $"http://www.mapquestapi.com/staticmap/v5/map?key=RwzmiyOYGW0yRqM4gFEdfJ6UwySfSHLE&start={From}&end={To}&outFormat=json&ambiguities=ignore&routeType={routeType}&doReverseGeocode=false&enhancedNarrative=false&avoidTimedConditions=false";
-
-            Uri requestUri = new Uri(staticMapUrl);
-            HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(5);
-
-            Task<HttpResponseMessage> response = client.GetAsync(requestUri);
-            response.Wait();
-
-            response.Result.EnsureSuccessStatusCode();
-
-            return await response.Result.Content.ReadAsByteArrayAsync();
+            else
+                StaticMapImage = null;
         }
 
         private byte[] staticMapImage;
 
+        private readonly RouteImageEntity routeImageEntity;
         private readonly MessageBoxService messageBox;
         private readonly ILogger<EditTourViewModel> logger;
     }

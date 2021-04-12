@@ -26,6 +26,7 @@ namespace Tourplaner.IoC
             RegisterDatabase(builder);
             RegisterRepositories(builder, assembly);
             RegisterEntities(builder, assembly);
+            RegisterRequests(builder, assembly);
             RegisterInfraStructure(builder);
 
             return builder.Build();
@@ -39,6 +40,11 @@ namespace Tourplaner.IoC
                 .SingleInstance();
 
             builder.RegisterInstance(config.DbSettings)
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterInstance(config.RouteImageSettings)
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();
@@ -70,6 +76,8 @@ namespace Tourplaner.IoC
                 .SingleInstance();
         }
 
+        //Todo: Remove dupes.
+
         private void RegisterRepositories(ContainerBuilder builder, Assembly assembly)
         {
             Type[] repositories = assembly
@@ -88,6 +96,19 @@ namespace Tourplaner.IoC
             Type[] entities = assembly
                 .GetTypes()
                 .Where(t => t.Name.EndsWith("Entity"))
+                .ToArray();
+
+            builder.RegisterTypes(entities)
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+        }
+
+        private void RegisterRequests(ContainerBuilder builder, Assembly assembly)
+        {
+            Type[] entities = assembly
+                .GetTypes()
+                .Where(t => t.Name.EndsWith("Request"))
                 .ToArray();
 
             builder.RegisterTypes(entities)

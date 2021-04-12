@@ -11,8 +11,8 @@ namespace Tourplaner
     {
         public string DisplayName => "Create Tour";
 
-        public CreateTourScreenViewModel(TourEntity tourEntity, MessageBoxService messageBox, ILogger<CreateTourScreenViewModel> logger, ILogger<EditTourViewModel> baseLogger)
-            : base(messageBox, baseLogger)
+        public CreateTourScreenViewModel(TourEntity tourEntity, RouteImageEntity routeImageEntity, MessageBoxService messageBox, ILogger<CreateTourScreenViewModel> logger, ILogger<EditTourViewModel> baseLogger)
+            : base(routeImageEntity, messageBox, baseLogger)
         {
             Assert.NotNull(tourEntity, nameof(tourEntity));
             Assert.NotNull(messageBox, nameof(messageBox));
@@ -31,6 +31,7 @@ namespace Tourplaner
             }
             catch (PostgresException pex)
             {
+                //Todo: Enum!!!
                 if (pex.SqlState == "23505")
                     messageBox.ShowInfo($"Tourname: {this.Name} is already in use.", "Invalid Tourname");
                 else
@@ -38,6 +39,13 @@ namespace Tourplaner
                     messageBox.ShowInfo($"{pex.Message}", "Database Error");
                     logger.Info(pex.Message);
                 }
+            }
+            catch(NpgsqlException nex)
+            {
+                if(nex.InnerException != null)
+                    messageBox.ShowInfo(nex.InnerException.Message, "Database Server Error");
+                else
+                    messageBox.ShowInfo(nex.Message, "Database Server Error");
             }
             catch (Exception ex)
             {

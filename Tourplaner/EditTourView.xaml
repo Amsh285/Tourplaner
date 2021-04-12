@@ -34,12 +34,24 @@
             <TextBox x:Name="From" Text="{Binding From}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Start" 
                      materialDesign:HintAssist.IsFloating="True"
-                     Margin="5"></TextBox>
+                     Margin="5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:CallMethodAction MethodName="RefreshMapImage" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
 
             <TextBox x:Name="To" Text="{Binding To}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Destination"
                      materialDesign:HintAssist.IsFloating="True"
-                     Margin="5"></TextBox>
+                     Margin="5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:CallMethodAction MethodName="RefreshMapImage" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
 
             <ComboBox x:Name="SelectedRouteType" SelectedItem="{Binding SelectedRouteType}"
                       ItemsSource="{Binding RouteTypes}" Margin="5,10" />
