@@ -1,5 +1,7 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Database;
 using Tourplaner.Models;
@@ -35,6 +37,46 @@ namespace Tourplaner.Repositories
             };
 
             return database.ExecuteScalar<int>(statement, transaction, parameters);
+        }
+
+        public IEnumerable<Tour> GetTours(NpgsqlTransaction transaction = null)
+        {
+            return GetToursWhere(null, transaction, new NpgsqlParameter[0]);
+        }
+
+        private IEnumerable<Tour> GetToursWhere(string whereCondition, NpgsqlTransaction transaction = null, params NpgsqlParameter[] parameters)
+        {
+            const string statement = @"SELECT ""Tour_ID"", ""Name"", 
+                ""Description"", ""From"", ""To"", ""RouteType""
+                FROM public.""Tour""";
+
+            StringBuilder sql = new StringBuilder(statement);
+
+            if(!string.IsNullOrWhiteSpace(whereCondition))
+            {
+                sql.Append(" WHERE ");
+                sql.Append(whereCondition);
+            }
+
+            sql.Append(";");
+
+            return database.Execute(sql.ToString(), transaction, RowSelector, parameters);
+        }
+
+        private static Tour RowSelector(NpgsqlDataReader reader)
+        {
+            return new Tour()
+            {
+                ID = reader.GetValue<int>("Tour_ID"),
+                Name = reader.GetValue<string>("Name"),
+                Description = reader.GetValueOrDefault<string>("Description"),
+                Route = new RouteInformation()
+                {
+                    From = reader.GetValueOrDefault<string>("From"),
+                    To = reader.GetValueOrDefault<string>("To"),
+                    RouteType = (RouteType)reader.GetValue<int>("RouteType")
+                }
+            };
         }
 
         private readonly PostgreSqlDatabase database;

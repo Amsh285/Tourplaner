@@ -44,6 +44,49 @@ namespace Tourplaner.Repositories
             return database.ExecuteScalar<int>(statement, transaction, parameters);
         }
 
+        public IEnumerable<TourLog> GetTourLogs(Tour tour, NpgsqlTransaction transaction = null)
+        {
+            return GetTourLogsWhere("\"Tour_ID\" = @tourID", transaction, new NpgsqlParameter("tourID", tour.ID));
+        }
+
+        private IEnumerable<TourLog> GetTourLogsWhere(string whereCondition, NpgsqlTransaction transaction = null, params NpgsqlParameter[] parameters)
+        {
+            const string statement = @"SELECT ""TourLog_ID"", ""Tour_ID"", ""TourDate"",
+                ""Distance"", ""AvgSpeed"", ""Breaks"", ""Brawls"", ""Abductions"",
+                ""HobgoblinSightings"", ""UFOSightings"", ""TotalTime"", ""rating""
+                FROM public.""TourLog""";
+
+            StringBuilder sql = new StringBuilder(statement);
+
+            if (!string.IsNullOrWhiteSpace(whereCondition))
+            {
+                sql.Append(" WHERE ");
+                sql.Append(whereCondition);
+            }
+
+            sql.Append(";");
+
+            return database.Execute(sql.ToString(), transaction, RowSelector, parameters);
+        }
+
+        private static TourLog RowSelector(NpgsqlDataReader reader)
+        {
+            return new TourLog()
+            {
+                ID = reader.GetValue<int>("TourLog_ID"),
+                TourDate = reader.GetValue<DateTime>("TourDate"),
+                Distance = decimal.ToDouble(reader.GetValue<decimal>("Distance")),
+                AvgSpeed = decimal.ToDouble(reader.GetValue<decimal>("AvgSpeed")),
+                Breaks = reader.GetValue<int>("Breaks"),
+                Brawls = reader.GetValue<int>("Brawls"),
+                Abductions = reader.GetValue<int>("Abductions"),
+                HobgoblinSightings = reader.GetValue<int>("HobgoblinSightings"),
+                UFOSightings = reader.GetValue<int>("UFOSightings"),
+                TotalTime = decimal.ToDouble(reader.GetValue<decimal>("TotalTime")),
+                Rating = reader.GetValue<int>("rating")
+            };
+        }
+
         private readonly PostgreSqlDatabase database;
     }
 }
