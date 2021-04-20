@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Database;
 using Tourplaner.Models;
@@ -32,6 +34,24 @@ namespace Tourplaner.Entities
                 }
 
                 transaction.Commit();
+            }
+        }
+
+        public IEnumerable<Tour> GetTours()
+        {
+            using (NpgsqlConnection connection = database.CreateAndOpenConnection())
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                IEnumerable<Tour> tours = tourRepository.GetTours(transaction);
+
+                foreach (Tour currentTour in tours)
+                {
+                    IEnumerable<TourLog> logEntries = tourLogRepository.GetTourLogs(currentTour, transaction);
+                    ObservableCollection<TourLog> logs = new ObservableCollection<TourLog>(logEntries);
+                    currentTour.Logs = logs;
+                }
+
+                return tours;
             }
         }
 

@@ -15,7 +15,7 @@
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:CallMethodAction MethodName="OnViewLoaded" TargetObject="{Binding}" />
+            <i:CallMethodAction MethodName="RefreshTours" TargetObject="{Binding}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -30,8 +30,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Margin="2" Grid.Row="0" Grid.ColumnSpan="2" >
-            <Button Margin="0,2,2,2">Neue Tour</Button>
-            <Button Margin="0,2,2,2">Tour Löschen</Button>
+            <Button Margin="0,2,2,2">
+                <Button.Content>Refresh Tours</Button.Content>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction MethodName="RefreshTours" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button Margin="0,2,2,2">New Tour</Button>
+            <Button Margin="0,2,2,2">Delete Tour</Button>
         </StackPanel>
 
         <ContentControl Margin="15" Grid.Row="1" Grid.Column="0">
