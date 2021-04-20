@@ -77,6 +77,7 @@ namespace Tourplaner
                 {
                     Model.Route.From = value;
                     NotifyPropertyChanged(nameof(From));
+                    NotifyPropertyChanged(nameof(CanRefreshMapImage));
                 }
             }
         }
@@ -93,6 +94,7 @@ namespace Tourplaner
                 {
                     Model.Route.To = value;
                     NotifyPropertyChanged(nameof(To));
+                    NotifyPropertyChanged(nameof(CanRefreshMapImage));
                 }
             }
         }
@@ -154,6 +156,8 @@ namespace Tourplaner
             }
         }
 
+        public bool CanRefreshMapImage => !string.IsNullOrWhiteSpace(From) && !string.IsNullOrWhiteSpace(To);
+
         public EditTourViewModel(RouteImageEntity routeImageEntity, MessageBoxService messageBox, ILogger<EditTourViewModel> logger)
         {
             Assert.NotNull(routeImageEntity, nameof(routeImageEntity));
@@ -170,7 +174,7 @@ namespace Tourplaner
 
         public void RefreshMapImage()
         {
-            if (!string.IsNullOrWhiteSpace(From) && !string.IsNullOrWhiteSpace(To))
+            if (CanRefreshMapImage)
             {
                 try
                 {

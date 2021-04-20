@@ -3,6 +3,7 @@ using System;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
+using Tourplaner.Models;
 using Tourplaner.UI;
 
 namespace Tourplaner
@@ -28,6 +29,10 @@ namespace Tourplaner
             try
             {
                 tourEntity.CreateTour(this.Model);
+                messageBox.ShowInfo("Tour created.");
+
+                this.Model = new Tour();
+                NotifyPropertyChanged(string.Empty);
             }
             catch (PostgresException pex)
             {
