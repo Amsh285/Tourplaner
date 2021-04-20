@@ -13,10 +13,14 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Width="150" Grid.Column="0">
+        <StackPanel HorizontalAlignment="Left" Width="150" Grid.Row="0" Grid.Column="0">
             <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Tour Data</TextBlock>
-            
+
             <TextBox x:Name="Name" Text="{Binding Name, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Name"
                      materialDesign:HintAssist.IsFloating="True"
@@ -31,7 +35,7 @@
                      MaxHeight="100"
                      Margin="5"></TextBox>
 
-            <TextBox x:Name="From" Text="{Binding From}" MaxLength="50"
+            <TextBox x:Name="From" Text="{Binding From, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Start" 
                      materialDesign:HintAssist.IsFloating="True"
                      Margin="5">
@@ -42,7 +46,7 @@
                 </i:Interaction.Triggers>
             </TextBox>
 
-            <TextBox x:Name="To" Text="{Binding To}" MaxLength="50"
+            <TextBox x:Name="To" Text="{Binding To, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"
                      materialDesign:HintAssist.Hint="Tour Destination"
                      materialDesign:HintAssist.IsFloating="True"
                      Margin="5">
@@ -57,31 +61,51 @@
                       ItemsSource="{Binding RouteTypes}" Margin="5,10" />
         </StackPanel>
 
-        <Grid Margin="30,0" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Route</TextBlock>
 
-            <StackPanel Grid.Row="0">
-                <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Route</TextBlock>
-
-                <StackPanel Orientation="Horizontal">
-                    <Button Margin="0,2,2,2">Refresh
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <i:CallMethodAction MethodName="RefreshMapImage" TargetObject="{Binding}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                </StackPanel>
-                <Image Source="{Binding StaticMapImage}" Width="250" Height="250" Stretch="UniformToFill" HorizontalAlignment="Left" Margin="0,10" />
+            <StackPanel Orientation="Horizontal" Margin="2" >
+                <Button IsEnabled="{Binding CanRefreshMapImage}" Margin="0,2,2,2">
+                    <Button.Content>Refresh</Button.Content>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="RefreshMapImage" TargetObject="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
             </StackPanel>
 
-            <StackPanel Grid.Row="1">
-                <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Logs</TextBlock>
-                <DataGrid ItemsSource="{Binding Logs}" AutoGenerateColumns="true"/>
-            </StackPanel>
-        </Grid>
+            <Image Source="{Binding StaticMapImage}" Width="200" Height="200" Stretch="UniformToFill" HorizontalAlignment="Left" Margin="0,10" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock Style="{DynamicResource MaterialDesignCaptionTextBlock}">Logs</TextBlock>
+            <DataGrid ItemsSource="{Binding Logs}" AutoGenerateColumns="false">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Tour date">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TourDate}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <DatePicker SelectedDate="{Binding TourDate}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <materialDesign:DataGridTextColumn Header="Distance" Binding="{Binding Distance}" />
+                    <materialDesign:DataGridTextColumn Header="Average Speed" Binding="{Binding AvgSpeed}" />
+                    <materialDesign:DataGridTextColumn Header="Breaks" Binding="{Binding Breaks}" />
+                    <materialDesign:DataGridTextColumn Header="Brawls" Binding="{Binding Brawls}" />
+                    <materialDesign:DataGridTextColumn Header="Abductions" Binding="{Binding Abductions}" />
+                    <materialDesign:DataGridTextColumn Header="Hobgoblin sightings" Binding="{Binding HobgoblinSightings}" />
+                    <materialDesign:DataGridTextColumn Header="UFO sightings" Binding="{Binding UFOSightings}" />
+                    <materialDesign:DataGridTextColumn Header="Time" Binding="{Binding TotalTime}" />
+                    <materialDesign:DataGridTextColumn Header="Rating" Binding="{Binding Rating}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
     </Grid>
 </UserControl>
