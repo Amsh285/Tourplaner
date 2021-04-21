@@ -14,7 +14,7 @@ namespace Tourplaner
 {
     public class TourScreenViewModel : Screen
     {
-        public ObservableCollection<EditTourViewModel> Tours
+        public ObservableCollection<UpdateTourViewModel> Tours
         {
             get
             {
@@ -30,7 +30,7 @@ namespace Tourplaner
             }
         }
 
-        public EditTourViewModel SelectedTour
+        public UpdateTourViewModel SelectedTour
         {
             get
             {
@@ -40,6 +40,9 @@ namespace Tourplaner
             {
                 if (selectedTour != value)
                 {
+                    if(selectedTour != null)
+                        selectedTour.Reset();
+
                     selectedTour = value;
                     NotifyPropertyChanged(nameof(SelectedTour));
                 }
@@ -62,17 +65,17 @@ namespace Tourplaner
             }
         }
 
-        public TourScreenViewModel(TourEntity tourEntity, Func<EditTourViewModel> editTourViewModelFactory, ILogger<TourScreenViewModel> logger)
+        public TourScreenViewModel(TourEntity tourEntity, Func<UpdateTourViewModel> updateTourViewModelFactory, ILogger<TourScreenViewModel> logger)
             : base("Tour Übersicht")
         {
             Assert.NotNull(tourEntity, nameof(tourEntity));
-            Assert.NotNull(editTourViewModelFactory, nameof(editTourViewModelFactory));
+            Assert.NotNull(updateTourViewModelFactory, nameof(updateTourViewModelFactory));
             Assert.NotNull(logger, nameof(logger));
 
-            Tours = new ObservableCollection<EditTourViewModel>();
+            Tours = new ObservableCollection<UpdateTourViewModel>();
 
             this.tourEntity = tourEntity;
-            this.editTourViewModelFactory = editTourViewModelFactory;
+            this.updateTourViewModelFactory = updateTourViewModelFactory;
             this.logger = logger;
         }
 
@@ -80,15 +83,16 @@ namespace Tourplaner
         {
             try
             {
-                IEnumerable<EditTourViewModel> result = tourEntity.GetTours()
+                IEnumerable<UpdateTourViewModel> result = tourEntity.GetTours()
                     .Select(t => {
-                        EditTourViewModel viewModel = editTourViewModelFactory();
+                        UpdateTourViewModel viewModel = updateTourViewModelFactory();
                         viewModel.Model = t;
 
+                        viewModel.RefreshOriginalTour();
                         return viewModel;
                     });
 
-                Tours = new ObservableCollection<EditTourViewModel>(result);
+                Tours = new ObservableCollection<UpdateTourViewModel>(result);
                 SelectedTour = null;
             }
             catch (Exception ex)
@@ -99,20 +103,21 @@ namespace Tourplaner
 
         public void OnOverviewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(e.AddedItems.Count > 0 && e.AddedItems[0] is EditTourViewModel editTourViewModel)
+            if(e.AddedItems.Count > 0 && e.AddedItems[0] is UpdateTourViewModel editTourViewModel)
             {
                 SelectedTour = editTourViewModel;
                 SelectedTourVisible = true;
+                SelectedTour.RefreshMapImage();
             }
         }
 
-        private ObservableCollection<EditTourViewModel> tours;
-        private EditTourViewModel selectedTour;
+        private ObservableCollection<UpdateTourViewModel> tours;
+        private UpdateTourViewModel selectedTour;
 
         private bool selectedTourVisible;
 
         private readonly TourEntity tourEntity;
-        private readonly Func<EditTourViewModel> editTourViewModelFactory;
+        private readonly Func<UpdateTourViewModel> updateTourViewModelFactory;
         private readonly ILogger<TourScreenViewModel> logger;
     }
 }

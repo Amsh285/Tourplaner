@@ -32,5 +32,23 @@ namespace Tourplaner.Models
         {
             TourDate = DateTime.Now;
         }
+
+        public TourLog Copy()
+        {
+            return new TourLog()
+            {
+                ID = ID,
+                TourDate = TourDate,
+                Distance = Distance,
+                AvgSpeed = AvgSpeed,
+                Breaks = Breaks,
+                Brawls = Brawls,
+                Abductions = Abductions,
+                HobgoblinSightings = HobgoblinSightings,
+                UFOSightings = UFOSightings,
+                TotalTime = TotalTime,
+                Rating = Rating
+            };
+        }
     }
 }

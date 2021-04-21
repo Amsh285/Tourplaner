@@ -61,7 +61,7 @@
         </ContentControl>
 
         <ContentControl Visibility="{Binding SelectedTourVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Margin="15" Grid.Row="1" Grid.Column="1">
-            <local:EditTourView DataContext="{Binding SelectedTour}" />
+            <local:UpdateTourView DataContext="{Binding SelectedTour}" />
         </ContentControl>
     </Grid>
 </UserControl>

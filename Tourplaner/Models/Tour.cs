@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
+using Tourplaner.Infrastructure;
 
 namespace Tourplaner.Models
 {
@@ -18,6 +20,31 @@ namespace Tourplaner.Models
         {
             Route = new RouteInformation();
             Logs = new ObservableCollection<TourLog>();
+        }
+
+        public Tour Copy()
+        {
+            RouteInformation routeCopy = new RouteInformation()
+            {
+                Ambiguities = Route.Ambiguities,
+                Format = Route.Format,
+                From = Route.From,
+                To = Route.To,
+                RouteType = Route.RouteType
+            };
+
+            ObservableCollection<TourLog> logCopies = Logs
+                .Select(l => l.Copy())
+                .ToObservableCollection();
+
+            return new Tour()
+            {
+                ID = ID,
+                Name = Name,
+                Description = Description,
+                Route = routeCopy,
+                Logs = logCopies
+            };
         }
     }
 }
