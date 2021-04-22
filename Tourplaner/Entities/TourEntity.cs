@@ -1,7 +1,9 @@
 ﻿using Npgsql;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Tourplaner.Infrastructure;
+using Tourplaner.Infrastructure.Data;
 using Tourplaner.Infrastructure.Database;
 using Tourplaner.Models;
 using Tourplaner.Repositories;
@@ -23,6 +25,8 @@ namespace Tourplaner.Entities
 
         public void CreateTour(Tour value)
         {
+            Assert.NotNull(value, nameof(value));
+
             using (NpgsqlConnection connection = database.CreateAndOpenConnection())
             using (NpgsqlTransaction transaction = connection.BeginTransaction())
             {
@@ -32,6 +36,34 @@ namespace Tourplaner.Entities
                 {
                     tourLogRepository.Insert(log, tourID, transaction);
                 }
+
+                transaction.Commit();
+            }
+        }
+
+        public void UpdateTour(Tour value)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            using (NpgsqlConnection connection = database.CreateAndOpenConnection())
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                tourRepository.Update(value, transaction);
+                IEnumerable<TourLog> oldState = tourLogRepository.GetTourLogs(value, transaction);
+
+                DatasetUnitOfWork<TourLog> unitOfWork = DatasetPatcher.PatchRows<TourLog, int>(value.Logs, oldState);
+                
+                unitOfWork.RowsToInsert
+                    .ToList()
+                    .ForEach(l => tourLogRepository.Insert(l, value.ID, transaction));
+
+                unitOfWork.RowsToUpdate
+                    .ToList()
+                    .ForEach(l => tourLogRepository.Update(l, transaction));
+
+                unitOfWork.RowsToDelete
+                    .ToList()
+                    .ForEach(l => tourLogRepository.Delete(l, transaction));
 
                 transaction.Commit();
             }

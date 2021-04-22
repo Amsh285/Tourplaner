@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Tourplaner.Infrastructure.Data;
 
 namespace Tourplaner.Models
 {
-    public sealed class TourLog
+    public sealed class TourLog : IIdentity<int>
     {
         public int ID { get; set; }
 
@@ -31,6 +30,24 @@ namespace Tourplaner.Models
         public TourLog()
         {
             TourDate = DateTime.Now;
+        }
+
+        public TourLog Copy()
+        {
+            return new TourLog()
+            {
+                ID = ID,
+                TourDate = TourDate,
+                Distance = Distance,
+                AvgSpeed = AvgSpeed,
+                Breaks = Breaks,
+                Brawls = Brawls,
+                Abductions = Abductions,
+                HobgoblinSightings = HobgoblinSightings,
+                UFOSightings = UFOSightings,
+                TotalTime = TotalTime,
+                Rating = Rating
+            };
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Tourplaner.Repositories
 
         public int Insert(TourLog value, int tourID, NpgsqlTransaction transaction = null)
         {
+            Assert.NotNull(value, nameof(value));
+
             const string statement = @"INSERT INTO public.""TourLog""(
                 ""Tour_ID"", ""TourDate"", ""Distance"", ""AvgSpeed"", ""Breaks"", ""Brawls"", ""Abductions"",
                 ""HobgoblinSightings"", ""UFOSightings"", ""TotalTime"", ""rating"")
@@ -42,6 +44,45 @@ namespace Tourplaner.Repositories
             };
 
             return database.ExecuteScalar<int>(statement, transaction, parameters);
+        }
+
+        public void Update(TourLog value, NpgsqlTransaction transaction = null)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            const string statement = @"UPDATE public.""TourLog""
+                SET ""TourDate"" = @tourDate, ""Distance"" = @distance, ""AvgSpeed"" = @avgSpeed,
+                ""Breaks"" = @breaks, ""Brawls"" = @brawls, ""Abductions"" = @abductions,
+                ""HobgoblinSightings"" = @hobgoblinSightings, ""UFOSightings"" = @ufoSightings,
+                ""TotalTime"" = @totalTime, rating = @rating
+                WHERE ""TourLog_ID"" = @tourlogID;";
+
+            NpgsqlParameter[] parameters = new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("tourDate", value.TourDate),
+                new NpgsqlParameter("distance", value.Distance),
+                new NpgsqlParameter("avgSpeed", value.AvgSpeed),
+                new NpgsqlParameter("breaks", value.Breaks),
+                new NpgsqlParameter("brawls", value.Brawls),
+                new NpgsqlParameter("abductions", value.Abductions),
+                new NpgsqlParameter("hobgoblinSightings", value.HobgoblinSightings),
+                new NpgsqlParameter("ufoSightings", value.UFOSightings),
+                new NpgsqlParameter("totalTime", value.TotalTime),
+                new NpgsqlParameter("rating", value.Rating),
+                new NpgsqlParameter("tourlogID", value.ID),
+            };
+
+            database.ExecuteNonQuery(statement, transaction, parameters);
+        }
+
+        public void Delete(TourLog value, NpgsqlTransaction transaction = null)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            const string statement = @"DELETE FROM public.""TourLog""
+                WHERE ""TourLog_ID"" = @tourlogID;";
+
+            database.ExecuteNonQuery(statement, transaction, new NpgsqlParameter("tourlogID", value.ID));
         }
 
         public IEnumerable<TourLog> GetTourLogs(Tour tour, NpgsqlTransaction transaction = null)
