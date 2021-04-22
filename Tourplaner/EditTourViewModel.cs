@@ -190,10 +190,11 @@ namespace Tourplaner
                 StaticMapImage = null;
         }
 
+        protected readonly MessageBoxService messageBox;
+
         private byte[] staticMapImage;
 
         private readonly RouteImageEntity routeImageEntity;
-        private readonly MessageBoxService messageBox;
         private readonly ILogger<EditTourViewModel> logger;
     }
 }

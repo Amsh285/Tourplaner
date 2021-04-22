@@ -86,6 +86,8 @@ namespace Tourplaner
                         viewModel.Model = t;
 
                         viewModel.RefreshOriginalTour();
+                        viewModel.OnTourUpdated += UpdateTourViewModel_OnTourUpdated;
+
                         return viewModel;
                     });
 
@@ -96,6 +98,15 @@ namespace Tourplaner
             {
                 logger.Error(ex.Message);
             }
+        }
+
+        private void UpdateTourViewModel_OnTourUpdated(object sender, EventArgs e)
+        {
+            int selectedTourID = SelectedTour.ID;
+
+            RefreshTours();
+            SelectedTour = Tours
+                .FirstOrDefault(t => t.ID == selectedTourID);
         }
 
         public void OnOverviewSelectionChanged(object sender, SelectionChangedEventArgs e)

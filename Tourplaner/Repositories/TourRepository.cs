@@ -39,6 +39,28 @@ namespace Tourplaner.Repositories
             return database.ExecuteScalar<int>(statement, transaction, parameters);
         }
 
+        public void Update(Tour value, NpgsqlTransaction transaction = null)
+        {
+            Assert.NotNull(value, nameof(value));
+            Assert.NotNull(value.Route, nameof(value.Route));
+
+            const string statement = @"UPDATE public.""Tour""
+                SET ""Name"" = @name, ""Description"" = @description, ""From"" = @from, ""To"" = @to, ""RouteType"" = @routeType
+                WHERE ""Tour_ID"" = @tourID;";
+
+            NpgsqlParameter[] parameters = new NpgsqlParameter[]
+            {
+                new NpgsqlParameter("name", value.Name),
+                PostgreSqlParameterHelper.ValueOrNull("description", value.Description),
+                PostgreSqlParameterHelper.ValueOrNull("from", value.Route.From),
+                PostgreSqlParameterHelper.ValueOrNull("to", value.Route.To),
+                new NpgsqlParameter("routeType", (int)value.Route.RouteType),
+                new NpgsqlParameter("tourID", value.ID),
+            };
+
+            database.ExecuteNonQuery(statement, transaction, parameters);
+        }
+
         public IEnumerable<Tour> GetTours(NpgsqlTransaction transaction = null)
         {
             return GetToursWhere(null, transaction, new NpgsqlParameter[0]);
