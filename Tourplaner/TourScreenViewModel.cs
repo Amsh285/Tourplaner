@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
-using Tourplaner.Models;
 
 namespace Tourplaner
 {

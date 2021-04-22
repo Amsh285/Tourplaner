@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Tourplaner.Infrastructure.Data;
 
 namespace Tourplaner.Models
 {
-    public sealed class TourLog
+    public sealed class TourLog : IIdentity<int>
     {
         public int ID { get; set; }
 
