@@ -1,11 +1,14 @@
-﻿using System;
+﻿using QuestPDF.Fluent;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
+using Tourplaner.Reports;
 
 namespace Tourplaner
 {
@@ -42,6 +45,7 @@ namespace Tourplaner
 
                     selectedTour = value;
                     NotifyPropertyChanged(nameof(SelectedTour));
+                    NotifyPropertyChanged(nameof(CanShowPDFReport));
                 }
             }
         }
@@ -61,6 +65,8 @@ namespace Tourplaner
                 }
             }
         }
+
+        public bool CanShowPDFReport => SelectedTour != null;
 
         public TourScreenViewModel(TourEntity tourEntity, Func<UpdateTourViewModel> updateTourViewModelFactory, ILogger<TourScreenViewModel> logger)
             : base("Tour Übersicht")
@@ -97,6 +103,19 @@ namespace Tourplaner
             catch (Exception ex)
             {
                 logger.Error(ex.Message);
+            }
+        }
+
+        public void ShowPDFReport()
+        {
+            if(CanShowPDFReport)
+            {
+                const string filePath = "tour_report.pdf";
+
+                TourDocument document = new TourDocument(SelectedTour.Model);
+                document.GeneratePdf(filePath);
+
+                Process.Start("explorer.exe", filePath);
             }
         }
 

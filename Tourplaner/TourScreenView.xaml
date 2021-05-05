@@ -38,7 +38,14 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
-            <Button Margin="0,2,2,2">New Tour</Button>
+            <Button IsEnabled="{Binding CanShowPDFReport}" Margin="0,2,2,2">
+                <Button.Content>Pdf Report</Button.Content>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction MethodName="ShowPDFReport" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
             <Button Margin="0,2,2,2">Delete Tour</Button>
         </StackPanel>
 
