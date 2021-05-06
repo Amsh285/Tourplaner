@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
@@ -14,6 +16,22 @@ namespace Tourplaner
 {
     public class TourScreenViewModel : Screen
     {
+        public ICollectionView TourView
+        {
+            get
+            {
+                return tourView;
+            }
+            set
+            {
+                if (tourView != value)
+                {
+                    tourView = value;
+                    NotifyPropertyChanged(nameof(TourView));
+                }
+            }
+        }
+
         public ObservableCollection<UpdateTourViewModel> Tours
         {
             get
@@ -40,33 +58,39 @@ namespace Tourplaner
             {
                 if (selectedTour != value)
                 {
-                    if(selectedTour != null)
+                    if (selectedTour != null)
                         selectedTour.Reset();
 
                     selectedTour = value;
                     NotifyPropertyChanged(nameof(SelectedTour));
+                    NotifyPropertyChanged(nameof(SelectedTourVisible));
                     NotifyPropertyChanged(nameof(CanShowPDFReport));
+                    NotifyPropertyChanged(nameof(CanDeleteTour));
                 }
             }
         }
 
-        public bool SelectedTourVisible
+        public string FilterText
         {
             get
             {
-                return selectedTourVisible;
+                return filterText;
             }
             set
             {
-                if (selectedTourVisible != value)
+                if (filterText != value)
                 {
-                    selectedTourVisible = value;
-                    NotifyPropertyChanged(nameof(SelectedTourVisible));
+                    filterText = value;
+                    NotifyPropertyChanged(nameof(FilterText));
                 }
             }
         }
 
+        public bool SelectedTourVisible => SelectedTour != null;
+
         public bool CanShowPDFReport => SelectedTour != null;
+
+        public bool CanDeleteTour => SelectedTour != null;
 
         public TourScreenViewModel(TourEntity tourEntity, Func<UpdateTourViewModel> updateTourViewModelFactory, ILogger<TourScreenViewModel> logger)
             : base("Tour Übersicht")
@@ -76,6 +100,8 @@ namespace Tourplaner
             Assert.NotNull(logger, nameof(logger));
 
             Tours = new ObservableCollection<UpdateTourViewModel>();
+            tourSource = new CollectionViewSource();
+            UpdateTourView();
 
             this.tourEntity = tourEntity;
             this.updateTourViewModelFactory = updateTourViewModelFactory;
@@ -87,7 +113,8 @@ namespace Tourplaner
             try
             {
                 IEnumerable<UpdateTourViewModel> result = tourEntity.GetTours()
-                    .Select(t => {
+                    .Select(t =>
+                    {
                         UpdateTourViewModel viewModel = updateTourViewModelFactory();
                         viewModel.Model = t;
 
@@ -99,6 +126,8 @@ namespace Tourplaner
 
                 Tours = new ObservableCollection<UpdateTourViewModel>(result);
                 SelectedTour = null;
+
+                UpdateTourView();
             }
             catch (Exception ex)
             {
@@ -108,7 +137,7 @@ namespace Tourplaner
 
         public void ShowPDFReport()
         {
-            if(CanShowPDFReport)
+            if (CanShowPDFReport)
             {
                 const string filePath = "tour_report.pdf";
 
@@ -116,6 +145,32 @@ namespace Tourplaner
                 document.GeneratePdf(filePath);
 
                 Process.Start("explorer.exe", filePath);
+            }
+        }
+
+        public void HandleFilterTextChanged()
+        {
+            if (!string.IsNullOrWhiteSpace(FilterText))
+                TourView.Filter = new Predicate<object>(FilterTourItem);
+            else
+                TourView.Filter = null;
+        }
+
+        private bool FilterTourItem(object item)
+        {
+            if (item is UpdateTourViewModel model)
+                return model.Name.Contains(FilterText) || (model.From?.Contains(FilterText) ?? false) ||
+                    (model.To?.Contains(FilterText) ?? false) || (model.Description?.Contains(FilterText) ?? false);
+
+            return false;
+        }
+
+        public void OnOverviewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is UpdateTourViewModel editTourViewModel)
+            {
+                SelectedTour = editTourViewModel;
+                SelectedTour.RefreshMapImage();
             }
         }
 
@@ -128,20 +183,18 @@ namespace Tourplaner
                 .FirstOrDefault(t => t.ID == selectedTourID);
         }
 
-        public void OnOverviewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void UpdateTourView()
         {
-            if(e.AddedItems.Count > 0 && e.AddedItems[0] is UpdateTourViewModel editTourViewModel)
-            {
-                SelectedTour = editTourViewModel;
-                SelectedTourVisible = true;
-                SelectedTour.RefreshMapImage();
-            }
+            tourSource.Source = Tours;
+            TourView = tourSource.View;
         }
 
+        private ICollectionView tourView;
+        private CollectionViewSource tourSource;
         private ObservableCollection<UpdateTourViewModel> tours;
         private UpdateTourViewModel selectedTour;
 
-        private bool selectedTourVisible;
+        private string filterText;
 
         private readonly TourEntity tourEntity;
         private readonly Func<UpdateTourViewModel> updateTourViewModelFactory;
