@@ -46,13 +46,31 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
-            <Button Margin="0,2,2,2">Delete Tour</Button>
+            <Button IsEnabled="{Binding CanDeleteTour}" Margin="0,2,2,2">Delete Tour</Button>
         </StackPanel>
 
-        <ContentControl Margin="15" Grid.Row="1" Grid.Column="0">
+        <Grid Margin="15" Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="FilterText"
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                     materialDesign:HintAssist.Hint="Filter"
+                     materialDesign:HintAssist.IsFloating="True"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     Margin="0,5,0,25" Grid.Row="0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:CallMethodAction MethodName="HandleFilterTextChanged" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+
             <DataGrid IsReadOnly="True" SelectionUnit="FullRow" SelectionMode="Single" 
-                  SelectedItem="{Binding SelectedTour}" ItemsSource="{Binding Tours}"
-                  AutoGenerateColumns="False"  >
+                  SelectedItem="{Binding SelectedTour}" ItemsSource="{Binding TourView}"
+                  AutoGenerateColumns="False" Grid.Row="1" >
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:CallMethodAction MethodName="OnOverviewSelectionChanged" TargetObject="{Binding}" />
@@ -65,7 +83,7 @@
                     <DataGridTextColumn Header="Ziel" Binding="{Binding To}"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </ContentControl>
+        </Grid>
 
         <ContentControl Visibility="{Binding SelectedTourVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Margin="15" Grid.Row="1" Grid.Column="1">
             <local:UpdateTourView DataContext="{Binding SelectedTour}" />
