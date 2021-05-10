@@ -61,6 +61,16 @@ namespace Tourplaner.Repositories
             database.ExecuteNonQuery(statement, transaction, parameters);
         }
 
+        public void Delete(Tour value, NpgsqlTransaction transaction = null)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            const string statement = @"DELETE FROM public.""Tour""
+                WHERE ""Tour_ID"" = @tourID;";
+
+            database.ExecuteNonQuery(statement, transaction, new NpgsqlParameter("tourID", value.ID));
+        }
+
         public IEnumerable<Tour> GetTours(NpgsqlTransaction transaction = null)
         {
             return GetToursWhere(null, transaction, new NpgsqlParameter[0]);

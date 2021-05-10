@@ -46,7 +46,14 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
-            <Button IsEnabled="{Binding CanDeleteTour}" Margin="0,2,2,2">Delete Tour</Button>
+            <Button IsEnabled="{Binding CanDeleteTour}" Margin="0,2,2,2">
+                <Button.Content>Delete Tour</Button.Content>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction MethodName="DeleteTour" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
         </StackPanel>
 
         <Grid Margin="15" Grid.Row="1" Grid.Column="0">

@@ -110,6 +110,8 @@ namespace Tourplaner
 
         public void RefreshTours()
         {
+            int? selectedTourID = SelectedTour?.ID;
+
             try
             {
                 IEnumerable<UpdateTourViewModel> result = tourEntity.GetTours()
@@ -133,6 +135,9 @@ namespace Tourplaner
             {
                 logger.Error(ex.Message);
             }
+
+            if(selectedTourID.HasValue)
+                SelectedTour = Tours.FirstOrDefault(t => t.ID == selectedTourID.Value);
         }
 
         public void ShowPDFReport()
@@ -146,6 +151,21 @@ namespace Tourplaner
 
                 Process.Start("explorer.exe", filePath);
             }
+        }
+
+        public void DeleteTour()
+        {
+            try
+            {
+                tourEntity.DeleteTour(SelectedTour.Model);
+                SelectedTour = null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
+
+            RefreshTours();
         }
 
         public void HandleFilterTextChanged()
@@ -176,11 +196,7 @@ namespace Tourplaner
 
         private void UpdateTourViewModel_OnTourUpdated(object sender, EventArgs e)
         {
-            int selectedTourID = SelectedTour.ID;
-
             RefreshTours();
-            SelectedTour = Tours
-                .FirstOrDefault(t => t.ID == selectedTourID);
         }
 
         private void UpdateTourView()

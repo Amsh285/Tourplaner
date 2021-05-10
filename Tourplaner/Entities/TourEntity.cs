@@ -69,6 +69,22 @@ namespace Tourplaner.Entities
             }
         }
 
+        public void DeleteTour(Tour value)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            using (NpgsqlConnection connection = database.CreateAndOpenConnection())
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                foreach (TourLog currentTourLog in value.Logs)
+                    tourLogRepository.Delete(currentTourLog, transaction);
+
+                tourRepository.Delete(value, transaction);
+
+                transaction.Commit();
+            }
+        }
+
         public IEnumerable<Tour> GetTours()
         {
             using (NpgsqlConnection connection = database.CreateAndOpenConnection())
