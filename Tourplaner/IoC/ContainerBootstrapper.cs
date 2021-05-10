@@ -53,9 +53,9 @@ namespace Tourplaner.IoC
         private static void RegisterViewModels(ContainerBuilder builder, Assembly assembly)
         {
             Type[] viewModels = assembly
-                            .GetTypes()
-                            .Where(t => t.Name.EndsWith("ViewModel"))
-                            .ToArray();
+                .GetTypes()
+                .Where(t => t.Name.EndsWith("ViewModel"))
+                .ToArray();
 
             builder.RegisterTypes(viewModels)
                 .AsSelf()
@@ -106,12 +106,12 @@ namespace Tourplaner.IoC
 
         private void RegisterRequests(ContainerBuilder builder, Assembly assembly)
         {
-            Type[] entities = assembly
+            Type[] requests = assembly
                 .GetTypes()
                 .Where(t => t.Name.EndsWith("Request"))
                 .ToArray();
 
-            builder.RegisterTypes(entities)
+            builder.RegisterTypes(requests)
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();

@@ -23,6 +23,9 @@ namespace Tourplaner.UI
                 Type associatedViewType = executingAssembly.GetTypes()
                     .FirstOrDefault(t => t.IsSubclassOf(typeof(UserControl)) && CompareNamingConventions(viewModelType, t));
 
+                if (associatedViewType == null)
+                    throw new ViewNotFoundException($"ViewType: {viewModelType.Name.Replace("ViewModel", "View")} could not be found for ViewModel:{viewModelType}");
+
                 DataTemplate template = new DataTemplate(viewModelType);
                 FrameworkElementFactory factory = new FrameworkElementFactory(associatedViewType);
                 factory.SetValue(FrameworkElement.DataContextProperty, screen);
