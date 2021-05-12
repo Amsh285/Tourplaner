@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Tourplaner
 {
     public class TourSelectionScreenViewModel : PropertyChangedBase, IScreen
     {
+        public event PropertyChangedEventHandler TourSelectionViewModelChanged;
+
         public string DisplayName
         {
             get
@@ -92,6 +95,12 @@ namespace Tourplaner
             }
         }
 
+        public bool AllToursValid => Tours.All(t => t.IsValid);
+
+        public bool AllMarkedToursValid => MarkedTours.All(t => t.IsValid);
+
+        public IEnumerable<TourSelectionViewModel> MarkedTours => Tours.Where(t => t.IsMarked);
+
         public TourSelectionScreenViewModel()
         {
             Tours = new ObservableCollection<TourSelectionViewModel>();
@@ -134,10 +143,10 @@ namespace Tourplaner
             TourView = tourViewSource.View;
 
             foreach (TourSelectionViewModel tour in Tours)
-                tour.PropertyChanged += ExportTourViewModelPropertyChanged;
+                tour.PropertyChanged += TourSelectionViewModelTourChanged;
         }
 
-        private void ExportTourViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void TourSelectionViewModelTourChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals(nameof(TourSelectionViewModel.IsMarked), StringComparison.Ordinal))
             {
@@ -146,6 +155,8 @@ namespace Tourplaner
                 else if (sender is TourSelectionViewModel current && !current.IsMarked)
                     CheckAllChecked = false;
             }
+
+            TourSelectionViewModelChanged?.Invoke(sender, e);
         }
 
         private string displayName;

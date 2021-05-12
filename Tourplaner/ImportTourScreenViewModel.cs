@@ -38,7 +38,8 @@ namespace Tourplaner
             }
         }
 
-        //public bool CanImport => Tours.Any(t => t.IsMarkedForImport);
+        public bool CanSaveTours => TourSelectionScreenViewModel.Tours.Any(t => t.IsMarked) &&
+            TourSelectionScreenViewModel.AllMarkedToursValid;
 
         public ImportTourScreenViewModel(TourEntity tourEntity, MessageBoxService messageBox, ILogger<ImportTourScreenViewModel> logger)
         {
@@ -51,6 +52,7 @@ namespace Tourplaner
             this.logger = logger;
 
             TourSelectionScreenViewModel = new TourSelectionScreenViewModel() { DisplayName = "Import Tours" };
+            TourSelectionScreenViewModel.TourSelectionViewModelChanged += TourSelectionScreenViewModelTourChanged;
         }
 
         public void LoadTours()
@@ -80,9 +82,31 @@ namespace Tourplaner
             }
             catch (Exception ex)
             {
-                messageBox.ShowError($"Tour could not be loaded: {ex.Message}");
+                messageBox.ShowError($"Tourdata could not be loaded: {ex.Message}");
                 logger.Error(ex.Message);
             }
+        }
+
+        public void SaveTours()
+        {
+            try
+            {
+                foreach (TourSelectionViewModel tour in TourSelectionScreenViewModel.MarkedTours)
+                    tourEntity.CreateTour(tour.Model);
+
+                messageBox.ShowInfo("Tour Import Successful.");
+                TourSelectionScreenViewModel.Tours = new ObservableCollection<TourSelectionViewModel>();
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowError($"Tourdata could not be saved: {ex.Message}");
+                logger.Error(ex.Message);
+            }
+        }
+
+        private void TourSelectionScreenViewModelTourChanged(object sender, PropertyChangedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(CanSaveTours));
         }
 
         private TourSelectionScreenViewModel tourSelectionScreenViewModel;

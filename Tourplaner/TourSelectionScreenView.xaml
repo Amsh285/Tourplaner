@@ -60,10 +60,10 @@
                     </DataGridCheckBoxColumn.HeaderTemplate>
                 </DataGridCheckBoxColumn>
                 
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="From" Binding="{Binding From}"/>
-                <DataGridTextColumn Header="To" Binding="{Binding To}"/>
-                <DataGridComboBoxColumn Header="Route Type" SelectedItemBinding="{Binding SelectedRouteType}" ItemsSource="{Binding Source={StaticResource routeTypeEnum}}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="From" Binding="{Binding From, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="To" Binding="{Binding To, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridComboBoxColumn Header="Route Type" SelectedItemBinding="{Binding SelectedRouteType, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Source={StaticResource routeTypeEnum}}"/>
                 <DataGridTextColumn Header="Log Count" Binding="{Binding TourLogCount}" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
