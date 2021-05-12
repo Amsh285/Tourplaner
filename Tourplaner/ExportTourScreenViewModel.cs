@@ -1,14 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
@@ -22,73 +19,24 @@ namespace Tourplaner
     {
         public string DisplayName => "Export Tours";
 
-        public ICollectionView ExportTourView
+        public TourSelectionScreenViewModel TourSelectionScreenViewModel
         {
             get
             {
-                return exportTourView;
+                return tourSelectionScreenViewModel;
             }
             set
             {
-                if (exportTourView != value)
+                if (tourSelectionScreenViewModel != value)
                 {
-                    exportTourView = value;
-                    NotifyPropertyChanged(nameof(ExportTourView));
+                    tourSelectionScreenViewModel = value;
+                    NotifyPropertyChanged(nameof(TourSelectionScreenViewModel));
                 }
             }
         }
 
-        public ObservableCollection<ExportTourViewModel> Tours
-        {
-            get
-            {
-                return tours;
-            }
-            set
-            {
-                if (tours != value)
-                {
-                    tours = value;
-                    NotifyPropertyChanged(nameof(Tours));
-                    NotifyPropertyChanged(nameof(CanExportTours));
-                }
-            }
-        }
-
-        public bool CheckAllChecked
-        {
-            get
-            {
-                return checkAllChecked;
-            }
-            set
-            {
-                if (checkAllChecked != value)
-                {
-                    checkAllChecked = value;
-                    NotifyPropertyChanged(nameof(CheckAllChecked));
-                }
-            }
-        }
-
-
-        public string FilterText
-        {
-            get
-            {
-                return filterText;
-            }
-            set
-            {
-                if (filterText != value)
-                {
-                    filterText = value;
-                    NotifyPropertyChanged(nameof(FilterText));
-                }
-            }
-        }
-
-        public bool CanExportTours => Tours.Any(t => t.IsMarkedForExport);
+        public bool CanExportTours => TourSelectionScreenViewModel.Tours.Any(t => t.IsMarked) &&
+            TourSelectionScreenViewModel.AllMarkedToursValid;
 
         public ExportTourScreenViewModel(TourEntity tourEntity, MessageBoxService messageBox, ILogger<ExportTourScreenViewModel> logger)
         {
@@ -100,43 +48,25 @@ namespace Tourplaner
             this.messageBox = messageBox;
             this.logger = logger;
 
-            this.Tours = new ObservableCollection<ExportTourViewModel>();
-            this.exportTourSource = new CollectionViewSource();
+            this.TourSelectionScreenViewModel = new TourSelectionScreenViewModel();
+            this.TourSelectionScreenViewModel.TourSelectionViewModelChanged += TourSelectionScreenViewModelTourChanged;
         }
 
         public void RefreshTours()
         {
             try
             {
-                IEnumerable<ExportTourViewModel> result = tourEntity.GetTours()
-                    .Select(t =>
-                        {
-                            ExportTourViewModel viewModel = new ExportTourViewModel() { Model = t };
-                            viewModel.PropertyChanged += ExportTourViewModelPropertyChanged;
+                IEnumerable<TourSelectionViewModel> result = tourEntity.GetTours()
+                    .Select(t => new TourSelectionViewModel() { Model = t });
 
-                            return viewModel;
-                        }
-                    );
-
-                Tours = new ObservableCollection<ExportTourViewModel>(result);
-                UpdateTourView();
+                TourSelectionScreenViewModel.Tours = result
+                    .ToObservableCollection();
             }
             catch (Exception ex)
             {
+                messageBox.ShowError($"Error Loading Tourdata: {ex.Message}");
                 logger.Error(ex.Message);
             }
-        }
-
-        public void ApplyCheckAll()
-        {
-            foreach (ExportTourViewModel tour in Tours)
-                tour.IsMarkedForExport = CheckAllChecked;
-        }
-
-        public void ApplyUncheckAll()
-        {
-            if (Tours.All(t => t.IsMarkedForExport))
-                ApplyCheckAll();
         }
 
         public void ExportMarkedTours()
@@ -152,8 +82,8 @@ namespace Tourplaner
 
                     if (dialog.ShowDialog() == true)
                     {
-                        List<Tour> markedTours = Tours
-                            .Where(t => t.IsMarkedForExport)
+                        List<Tour> markedTours = TourSelectionScreenViewModel
+                            .MarkedTours
                             .Select(t => t.Model)
                             .ToList();
 
@@ -176,48 +106,12 @@ namespace Tourplaner
             }
         }
 
-        public void HandleFilterTextChanged()
+        private void TourSelectionScreenViewModelTourChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(FilterText))
-                ExportTourView.Filter = new Predicate<object>(FilterTourItem);
-            else
-                ExportTourView.Filter = null;
+            NotifyPropertyChanged(nameof(CanExportTours));
         }
 
-        private bool FilterTourItem(object item)
-        {
-            if (item is ExportTourViewModel model)
-                return model.Name.Contains(FilterText) || (model.From?.Contains(FilterText) ?? false) ||
-                    (model.To?.Contains(FilterText) ?? false) || model.TourLogCount.ToString().Contains(FilterText) ||
-                    model.SelectedRouteType.ToString().Contains(filterText);
-
-            return false;
-        }
-
-        private void ExportTourViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName.Equals(nameof(ExportTourViewModel.IsMarkedForExport), StringComparison.Ordinal))
-            {
-                NotifyPropertyChanged(nameof(CanExportTours));
-
-                if (Tours.All(t => t.IsMarkedForExport))
-                    CheckAllChecked = true;
-                else if (sender is ExportTourViewModel current && !current.IsMarkedForExport)
-                    CheckAllChecked = false;
-            }
-        }
-
-        private void UpdateTourView()
-        {
-            exportTourSource.Source = Tours;
-            ExportTourView = exportTourSource.View;
-        }
-
-        private ICollectionView exportTourView;
-        private CollectionViewSource exportTourSource;
-        private ObservableCollection<ExportTourViewModel> tours;
-        private bool checkAllChecked;
-        private string filterText;
+        private TourSelectionScreenViewModel tourSelectionScreenViewModel;
 
         private readonly TourEntity tourEntity;
         private readonly MessageBoxService messageBox;

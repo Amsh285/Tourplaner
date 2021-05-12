@@ -39,17 +39,6 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
-            <CheckBox IsChecked="{Binding CheckAllChecked}" Margin="100, 2, 10, 2" >
-                <CheckBox.Content>Select All</CheckBox.Content>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Checked">
-                        <i:CallMethodAction MethodName="ApplyCheckAll" TargetObject="{Binding}" />
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="Unchecked">
-                        <i:CallMethodAction MethodName="ApplyUncheckAll" TargetObject="{Binding}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </CheckBox>
             <Button IsEnabled="{Binding CanExportTours}" Margin="0,2,2,2">
                 <Button.Content>Export</Button.Content>
                 <i:Interaction.Triggers>
@@ -65,32 +54,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <TextBox x:Name="FilterText"
-                     Width="200"
-                     HorizontalAlignment="Left"
-                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                     materialDesign:HintAssist.Hint="Filter"
-                     materialDesign:HintAssist.IsFloating="True"
-                     materialDesign:TextFieldAssist.HasClearButton="True"
-                     Margin="0,5,0,25" Grid.Row="0">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="TextChanged">
-                        <i:CallMethodAction MethodName="HandleFilterTextChanged" TargetObject="{Binding}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBox>
 
-            <DataGrid CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="False" ItemsSource="{Binding ExportTourView}" Grid.Row="1">
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Export" Binding="{Binding IsMarkedForExport, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                    <DataGridTextColumn Header="From" Binding="{Binding From}"/>
-                    <DataGridTextColumn Header="To" Binding="{Binding To}"/>
-                    <DataGridComboBoxColumn Header="Route Type" SelectedItemBinding="{Binding SelectedRouteType}" ItemsSource="{Binding Source={StaticResource routeTypeEnum}}"/>
-                    <DataGridTextColumn Header="Log Count" Binding="{Binding TourLogCount}" IsReadOnly="True" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <local:TourSelectionScreenView DataContext="{Binding TourSelectionScreenViewModel}" Grid.Row="1" />
         </Grid>
     </Grid>
 </UserControl>
