@@ -7,6 +7,7 @@ using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
 using Tourplaner.Infrastructure.Database;
 using Tourplaner.UI;
+using Tourplaner.ViewModels;
 
 namespace Tourplaner.IoC
 {
@@ -75,8 +76,6 @@ namespace Tourplaner.IoC
                 .AsSelf()
                 .SingleInstance();
         }
-
-        //Todo: Remove dupes.
 
         private void RegisterRepositories(ContainerBuilder builder, Assembly assembly)
         {

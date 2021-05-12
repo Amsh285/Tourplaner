@@ -51,7 +51,7 @@
                 </i:Interaction.Triggers>
             </CheckBox>
             <Button IsEnabled="{Binding CanExportTours}" Margin="0,2,2,2">
-                <Button.Content>Exportieren</Button.Content>
+                <Button.Content>Export</Button.Content>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <i:CallMethodAction MethodName="ExportMarkedTours" TargetObject="{Binding}" />

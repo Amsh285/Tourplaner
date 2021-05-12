@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Tourplaner v1.3.3.7" Height="450" Width="800"
+        Title="Tourplaner v1.3.3.7" Height="600" Width="1000"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -105,6 +105,12 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Export" Height="25" Width="25" Margin="10"/>
                             <TextBlock Text="Export Tours" VerticalAlignment="Center"  Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem x:Name="TourImport" Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Import" Height="25" Width="25" Margin="10"/>
+                            <TextBlock Text="Import Tours" VerticalAlignment="Center"  Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                 </ListView>

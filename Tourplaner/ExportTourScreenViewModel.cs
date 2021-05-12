@@ -164,14 +164,14 @@ namespace Tourplaner
                             Task result = JsonSerializer.SerializeAsync(writer.BaseStream, markedTours, markedTours.GetType(), options);
                             result.Wait();
 
-                            messageBox.ShowInfo("Tour Export erfolgreich.");
+                            messageBox.ShowInfo("Tour Export Successful.");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                messageBox.ShowError($"Fehler beim Tour Export: {ex.Message}");
+                messageBox.ShowError($"Error while exporting Tours: {ex.Message}");
                 logger.Error(ex.Message);
             }
         }
@@ -190,7 +190,6 @@ namespace Tourplaner
                 return model.Name.Contains(FilterText) || (model.From?.Contains(FilterText) ?? false) ||
                     (model.To?.Contains(FilterText) ?? false) || model.TourLogCount.ToString().Contains(FilterText) ||
                     model.SelectedRouteType.ToString().Contains(filterText);
-
 
             return false;
         }

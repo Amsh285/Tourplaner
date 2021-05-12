@@ -1,9 +1,4 @@
-﻿using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Windows;
+﻿using System;
 using System.Windows.Controls;
 using Tourplaner.Infrastructure;
 
@@ -28,17 +23,20 @@ namespace Tourplaner
         }
 
         public ShellViewModel(Func<CreateTourScreenViewModel> createTourScreenViewModel, Func<HomeViewModel> homeViewModel,
-            Func<TourScreenViewModel> tourScreenViewModel, Func<ExportTourScreenViewModel> exportTourScreenViewModelFactory)
+            Func<TourScreenViewModel> tourScreenViewModel, Func<ExportTourScreenViewModel> exportTourScreenViewModelFactory,
+            Func<ImportTourScreenViewModel> importTourScreenViewModelFactory)
         {
             Assert.NotNull(createTourScreenViewModel, nameof(createTourScreenViewModel));
             Assert.NotNull(homeViewModel, nameof(homeViewModel));
             Assert.NotNull(tourScreenViewModel, nameof(tourScreenViewModel));
             Assert.NotNull(exportTourScreenViewModelFactory, nameof(exportTourScreenViewModelFactory));
+            Assert.NotNull(importTourScreenViewModelFactory, nameof(importTourScreenViewModelFactory));
 
             this.createTourScreenViewModel = createTourScreenViewModel;
             this.homeViewModel = homeViewModel;
             this.tourScreenViewModel = tourScreenViewModel;
             this.exportTourScreenViewModelFactory = exportTourScreenViewModelFactory;
+            this.importTourScreenViewModelFactory = importTourScreenViewModelFactory;
         }
 
         public void OnMenuSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -53,6 +51,8 @@ namespace Tourplaner
                     SelectedScreen = tourScreenViewModel();
                 else if (item.Name.Equals("TourExport", StringComparison.Ordinal))
                     SelectedScreen = exportTourScreenViewModelFactory();
+                else if (item.Name.Equals("TourImport", StringComparison.Ordinal))
+                    SelectedScreen = importTourScreenViewModelFactory();
             }
         }
 
@@ -61,5 +61,6 @@ namespace Tourplaner
         private readonly Func<HomeViewModel> homeViewModel;
         private readonly Func<TourScreenViewModel> tourScreenViewModel;
         private readonly Func<ExportTourScreenViewModel> exportTourScreenViewModelFactory;
+        private readonly Func<ImportTourScreenViewModel> importTourScreenViewModelFactory;
     }
 }
