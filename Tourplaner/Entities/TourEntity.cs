@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace Tourplaner.Entities
                 IEnumerable<TourLog> oldState = tourLogRepository.GetTourLogs(value, transaction);
 
                 DatasetUnitOfWork<TourLog> unitOfWork = DatasetPatcher.PatchRows<TourLog, int>(value.Logs, oldState);
-                
+
                 unitOfWork.RowsToInsert
                     .ToList()
                     .ForEach(l => tourLogRepository.Insert(l, value.ID, transaction));
@@ -66,6 +67,41 @@ namespace Tourplaner.Entities
                     .ForEach(l => tourLogRepository.Delete(l, transaction));
 
                 transaction.Commit();
+            }
+        }
+
+        public int Copy(Tour value)
+        {
+            Assert.NotNull(value, nameof(value));
+
+            using (NpgsqlConnection connection = database.CreateAndOpenConnection())
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                IEnumerable<Tour> matches = tourRepository.GetToursWhere(
+                    "\"Name\" LIKE @searchPattern",
+                    transaction,
+                    new NpgsqlParameter("searchPattern", $"{value.Name}%")
+                );
+
+                string copyName = string.Empty;
+
+                try
+                {
+                    CopyNameSelector copySelector = new CopyNameSelector();
+                    copyName = copySelector.GetCopyName(value.Name, matches.Select(m => m.Name), 50);
+                }
+                catch (InvalidOperationException invalidOpEx)
+                {
+                    throw new TourEntityException($"Error selecting Copy- Tourname.", invalidOpEx);
+                }
+
+                Tour deepClone = value.Copy();
+                deepClone.Name = copyName;
+
+                int copyID = tourRepository.Insert(deepClone, transaction);
+                transaction.Commit();
+
+                return copyID;
             }
         }
 

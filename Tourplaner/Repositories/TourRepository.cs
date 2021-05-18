@@ -76,7 +76,7 @@ namespace Tourplaner.Repositories
             return GetToursWhere(null, transaction, new NpgsqlParameter[0]);
         }
 
-        private IEnumerable<Tour> GetToursWhere(string whereCondition, NpgsqlTransaction transaction = null, params NpgsqlParameter[] parameters)
+        public IEnumerable<Tour> GetToursWhere(string whereCondition, NpgsqlTransaction transaction = null, params NpgsqlParameter[] parameters)
         {
             const string statement = @"SELECT ""Tour_ID"", ""Name"", 
                 ""Description"", ""From"", ""To"", ""RouteType""

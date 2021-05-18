@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Tourplaner.Infrastructure
 {
@@ -12,6 +13,17 @@ namespace Tourplaner.Infrastructure
                 throw new ArgumentNullException(nameof(source));
 
             return new ObservableCollection<T>(source);
+        }
+
+        public static T MaxOrDefault<T>(this IEnumerable<T> source)
+        {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (source.Count() > 0)
+                return source.Max();
+
+            return default;
         }
     }
 }

@@ -11,13 +11,14 @@ namespace Tourplaner.Reports
     {
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
 
-        public TourDocument(Tour model)
+        public TourDocument(Tour model, byte[] image)
         {
             Assert.NotNull(model, nameof(model));
             Assert.NotNull(model.Route, nameof(model.Route));
             Assert.NotNull(model.Logs, nameof(model.Logs));
 
             this.model = model;
+            this.image = image;
         }
 
         public void Compose(IContainer container)
@@ -62,29 +63,49 @@ namespace Tourplaner.Reports
                 .PaddingTop(10)
                 .Page(page =>
                 {
-                    page.Header()
-                        .BorderBottom(1)
-                        .Padding(5)
-                        .Row(row =>
-                        {
-                            row.ConstantColumn(25).Padding(2).Text("#");
-                            row.RelativeColumn(2).Padding(2).Text("Date");
+                    //page.Header()
+                    //    .BorderBottom(1)
+                    //    .Padding(5)
+                    //    .Row(row =>
+                    //    {
+                    //        row.ConstantColumn(25).Padding(2).Text("#");
+                    //        row.RelativeColumn(2).Padding(2).Text("Date");
 
-                            row.RelativeColumn().Padding(2).Text("Distance");
-                            row.RelativeColumn().Padding(2).Text("Speed");
-                            row.RelativeColumn().Padding(2).Text("Breaks");
-                            row.RelativeColumn().Padding(2).Text("Brawls");
-                            row.RelativeColumn().Padding(2).Text("Abductions");
-                            row.RelativeColumn().Padding(2).Text("Hobgoblins");
-                            row.RelativeColumn().Padding(2).Text("UFO´s");
-                            row.RelativeColumn().Padding(2).Text("Time");
-                            row.RelativeColumn().Padding(2).Text("Rating");
-                        });
+                    //        row.RelativeColumn().Padding(2).Text("Distance");
+                    //        row.RelativeColumn().Padding(2).Text("Speed");
+                    //        row.RelativeColumn().Padding(2).Text("Breaks");
+                    //        row.RelativeColumn().Padding(2).Text("Brawls");
+                    //        row.RelativeColumn().Padding(2).Text("Abductions");
+                    //        row.RelativeColumn().Padding(2).Text("Hobgoblins");
+                    //        row.RelativeColumn().Padding(2).Text("UFO´s");
+                    //        row.RelativeColumn().Padding(2).Text("Time");
+                    //        row.RelativeColumn().Padding(2).Text("Rating");
+                    //    });
 
                     page
                         .Content()
                         .Stack(stack =>
                         {
+                            stack
+                                .Item()
+                                .BorderBottom(1)
+                                .Padding(5)
+                                .Row(row =>
+                                {
+                                    row.ConstantColumn(25).Padding(2).Text("#");
+                                    row.RelativeColumn(2).Padding(2).Text("Date");
+
+                                    row.RelativeColumn().Padding(2).Text("Distance");
+                                    row.RelativeColumn().Padding(2).Text("Speed");
+                                    row.RelativeColumn().Padding(2).Text("Breaks");
+                                    row.RelativeColumn().Padding(2).Text("Brawls");
+                                    row.RelativeColumn().Padding(2).Text("Abductions");
+                                    row.RelativeColumn().Padding(2).Text("Hobgoblins");
+                                    row.RelativeColumn().Padding(2).Text("UFO´s");
+                                    row.RelativeColumn().Padding(2).Text("Time");
+                                    row.RelativeColumn().Padding(2).Text("Rating");
+                                });
+
                             foreach (TourLog log in model.Logs)
                             {
                                 stack
@@ -108,6 +129,9 @@ namespace Tourplaner.Reports
                                         row.RelativeColumn().Padding(2).Text(log.Rating);
                                     });
                             }
+
+                            if (image != null)
+                                stack.Item().Image(image);
                         });
 
                     page
@@ -121,5 +145,6 @@ namespace Tourplaner.Reports
         }
 
         private readonly Tour model;
+        private readonly byte[] image;
     }
 }

@@ -10,7 +10,9 @@ using System.Windows.Data;
 using Tourplaner.Entities;
 using Tourplaner.Infrastructure;
 using Tourplaner.Infrastructure.Logging;
+using Tourplaner.Models;
 using Tourplaner.Reports;
+using Tourplaner.UI;
 
 namespace Tourplaner
 {
@@ -65,6 +67,7 @@ namespace Tourplaner
                     NotifyPropertyChanged(nameof(SelectedTour));
                     NotifyPropertyChanged(nameof(SelectedTourVisible));
                     NotifyPropertyChanged(nameof(CanShowPDFReport));
+                    NotifyPropertyChanged(nameof(CanCopySelectedTour));
                     NotifyPropertyChanged(nameof(CanDeleteTour));
                 }
             }
@@ -90,13 +93,17 @@ namespace Tourplaner
 
         public bool CanShowPDFReport => SelectedTour != null;
 
+        public bool CanCopySelectedTour => SelectedTour != null;
+
         public bool CanDeleteTour => SelectedTour != null;
 
-        public TourScreenViewModel(TourEntity tourEntity, Func<UpdateTourViewModel> updateTourViewModelFactory, ILogger<TourScreenViewModel> logger)
+        public TourScreenViewModel(TourEntity tourEntity, Func<UpdateTourViewModel> updateTourViewModelFactory,
+            MessageBoxService messageBox, ILogger<TourScreenViewModel> logger)
             : base("Tour Übersicht")
         {
             Assert.NotNull(tourEntity, nameof(tourEntity));
             Assert.NotNull(updateTourViewModelFactory, nameof(updateTourViewModelFactory));
+            Assert.NotNull(messageBox, nameof(messageBox));
             Assert.NotNull(logger, nameof(logger));
 
             Tours = new ObservableCollection<UpdateTourViewModel>();
@@ -105,6 +112,7 @@ namespace Tourplaner
 
             this.tourEntity = tourEntity;
             this.updateTourViewModelFactory = updateTourViewModelFactory;
+            this.messageBox = messageBox;
             this.logger = logger;
         }
 
@@ -133,6 +141,7 @@ namespace Tourplaner
             }
             catch (Exception ex)
             {
+                messageBox.ShowError($"Error Refreshing Tours: {ex.Message}");
                 logger.Error(ex.Message);
             }
 
@@ -146,10 +155,26 @@ namespace Tourplaner
             {
                 const string filePath = "tour_report.pdf";
 
-                TourDocument document = new TourDocument(SelectedTour.Model);
+                TourDocument document = new TourDocument(SelectedTour.Model, SelectedTour.StaticMapImage);
                 document.GeneratePdf(filePath);
 
                 Process.Start("explorer.exe", filePath);
+            }
+        }
+
+        public void CopySelectedTour()
+        {
+            try
+            {
+                int copyID = tourEntity.Copy(SelectedTour.Model);
+                RefreshTours();
+
+                SelectedTour = Tours.FirstOrDefault(t => t.ID == copyID);
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowError($"Error duplicating Tour: {ex.Message}");
+                logger.Error(ex.Message);
             }
         }
 
@@ -162,6 +187,7 @@ namespace Tourplaner
             }
             catch (Exception ex)
             {
+                messageBox.ShowError($"Error deleting Tour: {ex.Message}");
                 logger.Error(ex.Message);
             }
 
@@ -214,6 +240,7 @@ namespace Tourplaner
 
         private readonly TourEntity tourEntity;
         private readonly Func<UpdateTourViewModel> updateTourViewModelFactory;
+        private readonly MessageBoxService messageBox;
         private readonly ILogger<TourScreenViewModel> logger;
     }
 }

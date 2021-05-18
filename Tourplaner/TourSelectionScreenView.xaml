@@ -39,7 +39,7 @@
             </i:Interaction.Triggers>
         </TextBox>
 
-        <DataGrid x:Name="TourSelectionGrid" CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="False" ItemsSource="{Binding TourView}" Grid.Row="1">
+        <DataGrid x:Name="TourSelectionGrid" CanUserSortColumns="False" CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="False" ItemsSource="{Binding TourView}" Grid.Row="1">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="{Binding MarkedColumnHeader}" Binding="{Binding IsMarked, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.HeaderTemplate>

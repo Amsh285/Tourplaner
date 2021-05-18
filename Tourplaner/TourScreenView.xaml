@@ -46,6 +46,14 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
+            <Button IsEnabled="{Binding CanCopySelectedTour}" Margin="0,2,2,2">
+                <Button.Content>Copy Tour</Button.Content>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction MethodName="CopySelectedTour" TargetObject="{Binding}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
             <Button IsEnabled="{Binding CanDeleteTour}" Margin="0,2,2,2">
                 <Button.Content>Delete Tour</Button.Content>
                 <i:Interaction.Triggers>
