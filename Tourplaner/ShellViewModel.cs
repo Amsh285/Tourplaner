@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Tourplaner.Infrastructure;
 
@@ -22,6 +23,38 @@ namespace Tourplaner
             }
         }
 
+        public Visibility ButtonOpenMenuVisibility
+        {
+            get
+            {
+                return buttonOpenMenuVisibility;
+            }
+            set
+            {
+                if (buttonOpenMenuVisibility != value)
+                {
+                    buttonOpenMenuVisibility = value;
+                    NotifyPropertyChanged(nameof(ButtonOpenMenuVisibility));
+                }
+            }
+        }
+
+        public Visibility ButtonCloseMenuVisibility
+        {
+            get
+            {
+                return buttonCloseMenuVisibility;
+            }
+            set
+            {
+                if (buttonCloseMenuVisibility != value)
+                {
+                    buttonCloseMenuVisibility = value;
+                    NotifyPropertyChanged(nameof(ButtonCloseMenuVisibility));
+                }
+            }
+        }
+
         public ShellViewModel(Func<CreateTourScreenViewModel> createTourScreenViewModel, Func<HomeViewModel> homeViewModel,
             Func<TourScreenViewModel> tourScreenViewModel, Func<ExportTourScreenViewModel> exportTourScreenViewModelFactory,
             Func<ImportTourScreenViewModel> importTourScreenViewModelFactory)
@@ -37,6 +70,9 @@ namespace Tourplaner
             this.tourScreenViewModel = tourScreenViewModel;
             this.exportTourScreenViewModelFactory = exportTourScreenViewModelFactory;
             this.importTourScreenViewModelFactory = importTourScreenViewModelFactory;
+
+            ButtonOpenMenuVisibility = Visibility.Visible;
+            ButtonCloseMenuVisibility = Visibility.Collapsed;
         }
 
         public void OnMenuSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -56,7 +92,22 @@ namespace Tourplaner
             }
         }
 
+        public void OpenMenu(object sender, RoutedEventArgs e)
+        {
+            ButtonCloseMenuVisibility = Visibility.Visible;
+            ButtonOpenMenuVisibility = Visibility.Collapsed;
+        }
+
+        public void CloseMenu(object sender, RoutedEventArgs e)
+        {
+            ButtonCloseMenuVisibility = Visibility.Collapsed;
+            ButtonOpenMenuVisibility = Visibility.Visible;
+        }
+
+        private Visibility buttonOpenMenuVisibility;
+        private Visibility buttonCloseMenuVisibility;
         private IScreen selectedScreen;
+
         private readonly Func<CreateTourScreenViewModel> createTourScreenViewModel;
         private readonly Func<HomeViewModel> homeViewModel;
         private readonly Func<TourScreenViewModel> tourScreenViewModel;
